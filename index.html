@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Capped Retro 8-Bit Room Builder</title>
+  <title>Minecraft Cozy Vinyl Room Builder</title>
   <style>
     :root {
       --bg-color: #1f1315;
@@ -100,7 +100,7 @@
       border: 3px solid #26140a;
       color: var(--text-color);
       padding: 10px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -145,12 +145,11 @@
       align-items: center;
     }
 
-    /* CRITICAL FIX: Locked size proportions so it cannot expand infinitely on full screen */
     .wall {
       width: 100%;
       height: 100%;
-      max-width: 760px;   /* Bound structure limits */
-      max-height: 570px;  /* Bound structure limits */
+      max-width: 760px;   
+      max-height: 570px;  
       aspect-ratio: 4 / 3;
       background-color: var(--wall-color);
       background-image: 
@@ -161,6 +160,22 @@
       position: relative;
       overflow: hidden;
       box-shadow: inset 0 0 80px rgba(0,0,0,0.4);
+      transition: background-color 0.4s;
+    }
+
+    /* Ambient Cozy Light Glow Filter Overlay System */
+    .light-glow-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(255, 190, 60, 0.18);
+      mix-blend-mode: color-dodge;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .wall.lamp-on .light-glow-overlay {
+      opacity: 1;
     }
 
     /* Ambient Hanging Plants at Top */
@@ -203,7 +218,6 @@
       position: relative;
     }
     
-    /* Center Picture Disc Artwork */
     .vinyl::before {
       content: '';
       width: 90px; 
@@ -277,7 +291,7 @@
       outline: none;
       font-family: 'Courier New', monospace;
       font-size: 0.75rem;
-      width: 60px;
+      width: 65px;
       text-align: center;
       font-weight: bold;
       color: #000;
@@ -320,6 +334,26 @@
       transform: rotate(33deg);
     }
 
+    /* Interactive Desk Lamp Engine Layout */
+    .lamp-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer !important;
+    }
+    .lamp-beam {
+      width: 90px;
+      height: 130px;
+      background: linear-gradient(rgba(255,236,158,0.5), transparent);
+      clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%);
+      margin-top: -4px;
+      display: none;
+      pointer-events: none;
+    }
+    .lamp-wrapper.on .lamp-beam {
+      display: block;
+    }
+
     .pixel-art-asset svg {
       shape-rendering: crispEdges; 
     }
@@ -349,11 +383,12 @@
     <div>
       <div class="section-title">Add Large Furniture:</div>
       <div class="customizer-grid">
-        <button class="custom-item-btn" onclick="spawnPixelAsset('coffee')">☕ Coffee Maker</button>
+        <button class="custom-item-btn" onclick="spawnPixelAsset('coffee')">☕ Big Coffee Maker</button>
         <button class="custom-item-btn" onclick="spawnPixelAsset('floorPlant')">🌿 Floor Plant</button>
         <button class="custom-item-btn" onclick="spawnPixelAsset('hangingPlant')">🪴 Hanging Plant</button>
-        <button class="custom-item-btn" onclick="spawnPet('cat')">🐈 Cozy Cat</button>
-        <button class="custom-item-btn" onclick="spawnPet('dog')">🐕 Playful Dog</button>
+        <button class="custom-item-btn" onclick="spawnLamp()">💡 Desk Lamp</button>
+        <button class="custom-item-btn" onclick="spawnPet('cat')">🐈 Minecraft Cat</button>
+        <button class="custom-item-btn" onclick="spawnPet('dog')">🐕 Minecraft Dog</button>
         <button class="custom-item-btn" onclick="spawnTurntable()">🎛️ Vinyl Player</button>
       </div>
     </div>
@@ -363,6 +398,7 @@
 
   <div class="room-container">
     <div class="wall" id="wall">
+      <div class="light-glow-overlay"></div>
       <div class="wall-plants"></div>
 
       <div class="shelf shelf-1"></div>
@@ -384,18 +420,38 @@
 
     let currentPlayingVinyl = null;
 
-    // Open-Source Side View Full-Body Pixel Graphics Database
+    // Custom Open-Source Minecraft-Inspired SVG Vector Databases
     const pixelArtLibrary = {
-      cat_stand: `<svg width="100" height="75" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 3h2v4h-2V3zM3 5h2v2H3V5z" fill="#26140a"/><path d="M2 4h4v5H2V4zm4 2h9v4H6V6z" fill="#e7c19b"/><path d="M3 3h1v1H3V3zm2 0h1v1H5V3zM15 4h2v4h-1v2h-1V4z" fill="#d4a373"/><path d="M4 10h2v4H4v-4zm8 0h2v4h-2v-4z" fill="#26140a"/></svg>`,
-      cat_sit: `<svg width="100" height="75" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3h2v4H5V3z" fill="#26140a"/><path d="M3 4h5v4H3V4zm2 4h6v5H5V8z" fill="#e7c19b"/><path d="M4 2h1v1H4V2zm6 0h1v1h-1V2zm5 7h3v4h-1v-2h-2V9z" fill="#d4a373"/><path d="M5 12h2v2H5v-2zm3 0h2v2H8v-2z" fill="#26140a"/></svg>`,
-      dog_stand: `<svg width="110" height="85" viewBox="0 0 22 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 3h4v5H2V3zm4 3h11v5H6V6z" fill="#b07d62"/><path d="M1 5h2v2H1V5z" fill="#7f5539"/><path d="M4 2h2v3H4V2zm13 4h3v2h-1v3h-2V6z" fill="#9c6644"/><path d="M4 11h2v5H4v-5zm10 1h2v4h-2v-4z" fill="#26140a"/></svg>`,
-      dog_sit: `<svg width="110" height="85" viewBox="0 0 22 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 3h4v5H4V3zm2 5h6v7H6V8z" fill="#b07d62"/><path d="M3 5h2v2H3V5z" fill="#7f5539"/><path d="M5 2h2v3H5V2zm7 9h4v4h-4v-4z" fill="#9c6644"/><path d="M7 12h2v3H7v-3zm3 1h2v2h-2v-2z" fill="#26140a"/></svg>`,
-      coffee: `<svg width="75" height="95" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 1h11v14H2V1z" fill="#4e5154"/><path d="M3 2h9v5H3V2z" fill="#a0a4a8"/><path d="M3 9h6v5H3V9z" fill="#fff"/><path d="M4 10h4v3H4v-3z" fill="#6f4e37"/><path d="M13 4h2v5h-2V4z" fill="#2b2d42"/></svg>`,
+      // Minecraft Cat: Blocky Head, Big Square Eye pixel structure, Pink Block Nose
+      cat_stand: `<svg width="115" height="85" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 5h8v6H1V5z" fill="#d4a373"/> <path d="M9 3h6v6H9V3z" fill="#e7c19b"/> <path d="M11 1h2v2h-2V1zm4 1h2v2h-2V2z" fill="#26140a"/> <path d="M9 4h2v2H9V4zm4 0h2v2h-2V4z" fill="#fff"/> <path d="M10 4h1v1h-1V4zm4 4h1v1h-1V8z" fill="#55a630"/> <path d="M12 6h2v1h-2V6z" fill="#ffb4a2"/> <path d="M3 11h2v5H3v-5zm4 1h2v4H7v-4zm6-1h2v5h-2v-5z" fill="#26140a"/> <path d="M0 3h2v5H0V3z" fill="#d4a373"/> </svg>`,
+      cat_sit: `<svg width="115" height="85" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 6h6v8H4V6z" fill="#e7c19b"/> <path d="M6 2h6v6H6V2z" fill="#d4a373"/> <path d="M7 0h2v2H7V0zm4 0h2v2h-2V0z" fill="#26140a"/> 
+                  <path d="M6 3h2v2H6V3zm4 0h2v2h-2V3z" fill="#fff"/>
+                  <path d="M7 3h1v1H7V3zm4 3h1v1h-1V6z" fill="#55a630"/> <path d="M9 5h2v1H9V5z" fill="#ffb4a2"/> <path d="M4 14h3v2H4v-2zm4 0h3v2H8v-2z" fill="#26140a"/> </svg>`,
+      // Minecraft Dog: Distinct boxy protruding square snout, dark eyes
+      dog_stand: `<svg width="120" height="90" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 5h10v6H2V5z" fill="#b07d62"/> <path d="M12 3h6v6h-6V3z" fill="#9c6644"/> <path d="M18 5h3v3h-3V5z" fill="#7f5539"/> <path d="M19 4h2v1h-2V4z" fill="#000"/> <path d="M13 4h2v2h-2V4zm3 0h2v2h-2V4z" fill="#fff"/> <path d="M14 4h1v1h-1V4zm3 0h1v1h-1V4z" fill="#000"/> <path d="M4 11h2v5H4v-5zm6 0h2v5h-2v-5zm6-2h2v7h-2V9z" fill="#26140a"/> </svg>`,
+      dog_sit: `<svg width="120" height="90" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 6h7v8H5V6z" fill="#b07d62"/> <path d="M8 2h6v6H8V2z" fill="#9c6644"/> <path d="M14 4h3v3h-3V4z" fill="#7f5539"/> <path d="M15 3h2v1h-2V3z" fill="#000"/>
+                  <path d="M9 3h2v2H9V3zm3 0h2v2h-2V3z" fill="#fff"/>
+                  <path d="M10 3h1v1h-1V3zm3 0h1v1h-1V3z" fill="#000"/>
+                  <path d="M5 14h3v2H5v-2zm5 0h3v2h-3v-2z" fill="#26140a"/>
+                </svg>`,
+      // OVERSIZED Coffee Machine Design (Scales visually huge)
+      coffee: `<svg width="105" height="135" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 0h12v16H1V0z" fill="#3a3d40"/>
+              <path d="M2 1h10v6H2V1z" fill="#7a8085"/>
+              <path d="M3 2h2v1H3V2zm4 0h4v3H7V2z" fill="#1d3557"/>
+              <path d="M2 9h9v6H2V9z" fill="#fff"/>
+              <path d="M3 10h7v4H3v-4z" fill="#582f0e"/>
+              <path d="M13 3h2v7h-2V3z" fill="#1a1c1e"/>
+            </svg>`,
       floorPlant: `<svg width="90" height="120" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 1h6v4H5V1zm-4 4h14v3H1V5zm3 3h10v2H4V8z" fill="#38b000"/><path d="M3 8h10v7H3V8z" fill="#b76935"/><path d="M4 9h8v5H4V9z" fill="#a0522d"/></svg>`,
       hangingPlant: `<svg width="85" height="120" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 0h2v5H7V0z" fill="#ccd5ae"/><path d="M2 5h12v4H2V5z" fill="#bc6c25"/><path d="M1 9h3v6H1V9zm11 0h3v5h-3V9zm-6 0h4v7H6V9z" fill="#2d6a4f"/></svg>`
     };
 
-    window.onload = () => { fetchTracks("8-Bit Retro"); };
+    window.onload = () => { fetchTracks("8-Bit Lofi"); };
 
     searchBtn.addEventListener('click', () => { if(searchInput.value.trim()) fetchTracks(searchInput.value); });
     searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && searchInput.value.trim()) fetchTracks(searchInput.value); });
@@ -436,9 +492,7 @@
       });
     }
 
-    // Spawn Vinyl onto the Wall / Shelf
     function spawnVinyl(coverUrl, previewUrl) {
-      // CRITICAL SECURITY GUARD: Restricts room capacity to 9 vinyls max
       const totalPlaced = document.querySelectorAll('.placed-vinyl').length;
       if (totalPlaced >= 9) {
         statusMsg.textContent = "⚠️ NO ROOM! MAX 9 VINYLS ALLOWED.";
@@ -451,13 +505,10 @@
       vinyl.style.setProperty('--cover-art', `url('${coverUrl}')`);
       vinyl.dataset.preview = previewUrl;
       
-      // Calculate automated slots across 3 rows for clean alignment dropping
-      const shelfIndex = Math.floor(totalPlaced / 3) + 1; // 1, 2, or 3
-      const slotIndex = totalPlaced % 3; // 0, 1, or 2
-      
+      const shelfIndex = Math.floor(totalPlaced / 3) + 1; 
+      const slotIndex = totalPlaced % 3; 
       const targetShelf = document.querySelector(`.shelf-${shelfIndex}`);
       
-      // Perfect structural grid calculations
       const horizontalSpacing = wall.clientWidth / 3;
       const startX = (horizontalSpacing * slotIndex) + (horizontalSpacing / 2) - 67;
       const startY = targetShelf.offsetTop - 128;
@@ -468,13 +519,14 @@
       vinyl.addEventListener('dblclick', () => {
         if (currentPlayingVinyl === vinyl) stopMusic();
         vinyl.remove();
-        statusMsg.textContent = ""; // Clear block message warning
+        statusMsg.textContent = ""; 
       });
 
       wall.appendChild(vinyl);
       makeDraggable(vinyl);
     }
 
+    // Advanced Voice Command Parsing Architecture ("sit" / "stand")
     function spawnPet(type) {
       const container = document.createElement('div');
       container.classList.add('movable-asset', 'pet-container');
@@ -496,12 +548,15 @@
 
       const shelf3 = document.querySelector('.shelf-3');
       container.style.left = `${Math.random() * (wall.clientWidth - 150) + 20}px`;
-      container.style.top = `${shelf3.offsetTop - 95}px`;
+      container.style.top = `${shelf3.offsetTop - 110}px`;
 
+      // Sanitized exact string evaluation match parsing engine
       input.addEventListener('input', (e) => {
-        if(e.target.value.toLowerCase().trim() === 'sit!') {
+        const cleanedCmd = e.target.value.toLowerCase().trim().replace(/[^a-z]/g, '');
+        
+        if (cleanedCmd === 'sit') {
           artWrapper.innerHTML = pixelArtLibrary[type + '_sit'];
-        } else {
+        } else if (cleanedCmd === 'stand') {
           artWrapper.innerHTML = pixelArtLibrary[type + '_stand'];
         }
       });
@@ -514,6 +569,49 @@
       makeDraggable(container);
     }
 
+    // Spawn Lighting Apparatus Deskside Lamp Setup Engine
+    function spawnLamp() {
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('movable-asset', 'lamp-wrapper', 'pixel-art-asset');
+      
+      // Retro Desk Lamp Vector Asset Outline String
+      const lampSvg = `<svg width="70" height="70" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 14h6v2H5v-2z" fill="#4a4e69"/> <path d="M7 7h2v7H7V7z" fill="#9a8c98"/> <path d="M3 3h10v4H3V3z" fill="#e63946"/> <path d="M4 7h8v1H4V7z" fill="#f4a261"/> </svg>`;
+
+      const beam = document.createElement('div');
+      beam.classList.add('lamp-beam');
+
+      wrapper.innerHTML = lampSvg;
+      wrapper.appendChild(beam);
+
+      const shelf3 = document.querySelector('.shelf-3');
+      wrapper.style.left = "280px";
+      wrapper.style.top = `${shelf3.offsetTop - 62}px`;
+
+      // Interactive State Toggle Click Hook Interaction Routing
+      wrapper.addEventListener('click', (e) => {
+        // Stop drag events from accidentally toggling power states
+        if (wrapper.dataset.dragging === "true") return;
+
+        wrapper.classList.toggle('on');
+        const processingLamps = document.querySelectorAll('.lamp-wrapper.on').length;
+        
+        if (processingLamps > 0) {
+          wall.classList.add('lamp-on');
+        } else {
+          wall.classList.remove('lamp-on');
+        }
+      });
+
+      wrapper.addEventListener('dblclick', () => {
+        wrapper.remove();
+        if (!document.querySelector('.lamp-wrapper.on')) wall.classList.remove('lamp-on');
+      });
+
+      wall.appendChild(wrapper);
+      makeDraggable(wrapper);
+    }
+
     function spawnPixelAsset(key) {
       const decor = document.createElement('div');
       decor.classList.add('movable-asset', 'pixel-art-asset');
@@ -523,7 +621,7 @@
       const targetShelf = (key === 'hangingPlant') ? document.querySelector('.shelf-1') : shelf3;
       
       decor.style.left = `${Math.random() * (wall.clientWidth - 120) + 20}px`;
-      decor.style.top = `${targetShelf.offsetTop - (key === 'hangingPlant' ? 25 : 85)}px`;
+      decor.style.top = `${targetShelf.offsetTop - (key === 'hangingPlant' ? 25 : (key === 'coffee' ? 120 : 85))}px`;
 
       decor.addEventListener('dblclick', () => decor.remove());
       wall.appendChild(decor);
@@ -561,12 +659,16 @@
     // Drag Engine with input filter shield protection bypass locks
     let activeElement = null;
     let startX, startY, initialLeft, initialTop;
+    let dragMoveDetected = false;
 
     function makeDraggable(element) {
       element.addEventListener('pointerdown', (e) => {
         if (e.target.tagName === 'INPUT') return;
 
         activeElement = element;
+        activeElement.dataset.dragging = "false";
+        dragMoveDetected = false;
+
         document.querySelectorAll('.movable-asset').forEach(v => v.style.zIndex = 5);
         activeElement.style.zIndex = 10;
 
@@ -589,6 +691,11 @@
         const dx = e.clientX - startX;
         const dy = e.clientY - startY;
 
+        if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+          dragMoveDetected = true;
+          activeElement.dataset.dragging = "true";
+        }
+
         let newLeft = initialLeft + dx;
         let newTop = initialTop + dy;
 
@@ -605,6 +712,10 @@
       element.addEventListener('pointerup', (e) => {
         if (activeElement === element) {
           activeElement.releasePointerCapture(e.pointerId);
+          
+          // Clear dragging state slightly after release loop sequence completes
+          setTimeout(() => { if(element) element.dataset.dragging = "false"; }, 50);
+
           if (activeElement.classList.contains('placed-vinyl')) {
             checkTurntableSnap(activeElement);
           }
@@ -656,6 +767,7 @@
     clearBtn.addEventListener('click', () => {
       stopMusic();
       document.querySelectorAll('.movable-asset').forEach(asset => asset.remove());
+      wall.classList.remove('lamp-on');
       statusMsg.textContent = "";
     });
   </script>
