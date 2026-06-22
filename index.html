@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive Vinyl Wall Builder</title>
+  <title>Retro Vinyl Wall & Shelf Builder</title>
   <style>
     :root {
-      --bg-color: #1e1e24;
-      --wall-color: #e5e0d8; /* Elegant gallery wall color */
-      --sidebar-color: #2a2a35;
-      --text-color: #ffffff;
+      --bg-color: #1a1012;
+      --wall-color: #d4a373; /* Retro warm tan/wood tone */
+      --sidebar-color: #2c1a1d;
+      --text-color: #fefae0;
+      --pixel-border: 4px solid #4a2810;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Courier New', Courier, monospace; /* Retro monospace font */
+      font-weight: bold;
     }
 
     body {
@@ -27,113 +29,167 @@
       overflow: hidden;
     }
 
-    /* Sidebar / Palette Styles */
+    /* Sidebar / Control Panel */
     .sidebar {
-      width: 320px;
+      width: 340px;
       background-color: var(--sidebar-color);
       padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      box-shadow: 5px 0 15px rgba(0,0,0,0.3);
+      gap: 15px;
+      border-right: 6px solid #4a2810;
       z-index: 10;
     }
 
     .sidebar h2 {
-      font-size: 1.5rem;
-      border-bottom: 2px solid #444;
+      font-size: 1.4rem;
+      text-align: center;
+      color: #faedcd;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 4px dashed #4a2810;
       padding-bottom: 10px;
     }
 
-    .instructions {
-      font-size: 0.85rem;
-      color: #aaa;
-      line-height: 1.4;
+    /* Search Box Styles */
+    .search-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .search-input {
+      background: #4a2810;
+      border: 3px solid #faedcd;
+      padding: 10px;
+      color: #fff;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .search-btn {
+      background-color: #e63946;
+      color: white;
+      border: 3px solid #4a2810;
+      padding: 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+      box-shadow: 0 4px 0 #9b111e;
+    }
+
+    .search-btn:active {
+      transform: translateY(4px);
+      box-shadow: none;
     }
 
     .palette {
       flex: 1;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
+      gap: 12px;
       overflow-y: auto;
       padding-right: 5px;
+      margin-top: 10px;
     }
 
-    /* Vinyl Thumbnails in Sidebar */
+    /* Vinyl Previews */
     .palette-item {
-      background: #333;
-      padding: 10px;
-      border-radius: 8px;
+      background: #3d2326;
+      border: 3px solid #4a2810;
+      padding: 8px;
       cursor: pointer;
       text-align: center;
-      transition: transform 0.2s, background 0.2s;
+      transition: transform 0.1s;
     }
 
     .palette-item:hover {
-      transform: translateY(-3px);
-      background: #444;
+      background: #523034;
+      transform: scale(1.02);
     }
 
     .palette-item p {
-      font-size: 0.8rem;
-      margin-top: 8px;
+      font-size: 0.7rem;
+      margin-top: 5px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      color: #faedcd;
     }
 
-    /* The Main Wall */
+    /* The Retro Wall Container */
     .wall-container {
       flex: 1;
       position: relative;
-      padding: 40px;
+      padding: 30px;
       display: flex;
       justify-content: center;
       align-items: center;
+      background-color: #1a1012;
     }
 
+    /* Retro Pixelated Wall */
     .wall {
       width: 100%;
       height: 100%;
       background-color: var(--wall-color);
+      /* Retro brick/pixel texture pattern using linear gradients */
       background-image: 
-        linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px),
-        linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
-      background-size: 20px 20px; /* Subtle grid pattern */
-      border-radius: 12px;
+        linear-gradient(90deg, #ccd5ae 2px, transparent 2px),
+        linear-gradient(rgba(0,0,0,0.08) 2px, transparent 2px);
+      background-size: 32px 32px; 
+      border: 8px solid #4a2810;
       position: relative;
-      box-shadow: inset 0 0 40px rgba(0,0,0,0.2), 0 10px 30px rgba(0,0,0,0.5);
       overflow: hidden;
+      box-shadow: inset 0 0 60px rgba(0,0,0,0.15);
     }
 
-    /* CSS Vinyl Record Design */
-    .vinyl {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #0d0d0d 35%, #222 45%, #0d0d0d 50%, #1a1a1a 60%, #050505 70%);
+    /* Simple, Brown, Pixelated Shelf */
+    .pixel-shelf {
+      position: absolute;
+      bottom: 120px;
+      left: 5%;
+      width: 90%;
+      height: 20px;
+      background-color: #8338ec; /* Fallback */
+      background: #6f4e37; /* Coffee brown */
+      border: 4px solid #3a2212; /* Dark pixel outline */
+      /* Stacked box shadows give it a rigid 3D pixel-art extrude effect */
       box-shadow: 
-        inset 0 0 0 2px rgba(255,255,255,0.05),
-        inset 0 0 0 10px rgba(0,0,0,0.8),
-        inset 0 0 0 18px rgba(255,255,255,0.03),
-        inset 0 0 0 26px rgba(0,0,0,0.8),
-        0 8px 20px rgba(0,0,0,0.4);
+        0 6px 0 #3a2212, 
+        0 14px 10px rgba(0,0,0,0.3),
+        inset 0 4px 0 #9c6644; /* Top pixel highlight */
+      z-index: 2;
+    }
+
+    /* Vinyl Record Styling */
+    .vinyl {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #111 30%, #222 40%, #111 48%, #1a1a1a 55%, #050505 70%);
+      box-shadow: 
+        inset 0 0 0 4px rgba(0,0,0,0.9),
+        inset 0 0 0 14px rgba(255,255,255,0.03),
+        inset 0 0 0 22px rgba(0,0,0,0.8),
+        0 6px 12px rgba(0,0,0,0.4);
       display: flex;
       justify-content: center;
       align-items: center;
       position: relative;
     }
 
-    /* Vinyl Center Label */
+    /* Vinyl Center Label (The Album Cover Artwork) */
     .vinyl::before {
       content: '';
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
-      background-color: var(--label-color, #ff4757);
+      background-color: #e63946;
+      background-image: var(--cover-art, none);
+      background-size: cover;
+      background-position: center;
       border: 2px solid #000;
-      z-index: 2;
+      z-index: 4;
     }
 
     /* Center Spindle Hole */
@@ -144,116 +200,158 @@
       border-radius: 50%;
       background-color: var(--wall-color);
       position: absolute;
-      z-index: 3;
-      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5);
+      z-index: 5;
     }
 
     /* Draggable Vinyls on the Wall */
     .placed-vinyl {
       position: absolute;
       cursor: move;
-      touch-action: none; /* Prevents mobile scrolling while dragging */
+      touch-action: none;
       user-select: none;
-      transition: transform 0.1s ease;
     }
 
     .placed-vinyl:active {
-      transform: scale(1.05);
+      transform: scale(1.03);
     }
 
-    /* Action Buttons */
+    /* Clear Button */
     .clear-btn {
-      background-color: #ff4757;
+      background-color: #bc6c25;
       color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 6px;
+      border: 3px solid #4a2810;
+      padding: 10px;
       cursor: pointer;
-      font-weight: bold;
-      transition: background 0.2s;
+      text-transform: uppercase;
+      box-shadow: 0 4px 0 #603813;
     }
 
-    .clear-btn:hover {
-      background-color: #ff6b81;
+    .clear-btn:hover { background-color: #dda15e; }
+    .clear-btn:active { transform: translateY(4px); box-shadow: none; }
+
+    /* Loading indicator text */
+    #status-msg {
+      font-size: 0.75rem;
+      color: #dda15e;
+      text-align: center;
+      min-height: 15px;
     }
   </style>
 </head>
 <body>
 
   <div class="sidebar">
-    <h2>Vinyl Wall Builder</h2>
-    <p class="instructions">
-      <strong>Click</strong> a vinyl to add it to the wall.<br>
-      <strong>Drag</strong> them around to arrange.<br>
-      <strong>Double-click</strong> a vinyl on the wall to remove it.
-    </p>
+    <h2>Wall Builder</h2>
+    
+    <div class="search-container">
+      <label for="search-input" style="font-size: 0.8rem; color: #faedcd;">SEARCH ALBUM COVERS:</label>
+      <input type="text" id="search-input" class="search-input" placeholder="e.g., Pink Floyd, Daft Punk...">
+      <button id="search-btn" class="search-btn">Find Vinyls</button>
+      <div id="status-msg"></div>
+    </div>
     
     <div class="palette" id="palette">
-      </div>
+      <!-- Search results will generate here -->
+    </div>
 
-    <button class="clear-btn" id="clear-wall">Clear Wall</button>
+    <button class="clear-btn" id="clear-wall">Reset Wall</button>
   </div>
 
   <div class="wall-container">
     <div class="wall" id="wall">
-      </div>
+      <!-- The Pixelated Shelf -->
+      <div class="pixel-shelf"></div>
+      <!-- Placed vinyls go here -->
+    </div>
   </div>
 
   <script>
-    // Mock Vinyl Data (Feel free to change colors or titles!)
-    const vinylData = [
-      { id: 1, title: 'Rock Classics', color: '#ff4757' },
-      { id: 2, title: 'Jazz Grooves', color: '#ffa502' },
-      { id: 3, title: 'Synthwave Neon', color: '#2ed573' },
-      { id: 4, title: 'Deep Blues', color: '#1e90ff' },
-      { id: 5, title: 'Hip Hop Beats', color: '#9b59b6' },
-      { id: 6, title: 'Ambient Chill', color: '#1dd1a1' },
-      { id: 7, title: 'Reggae Sun', color: '#ffeb3b' },
-      { id: 8, title: 'Metal Core', color: '#57606f' }
-    ];
-
     const palette = document.getElementById('palette');
     const wall = document.getElementById('wall');
     const clearBtn = document.getElementById('clear-wall');
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.getElementById('search-btn');
+    const statusMsg = document.getElementById('status-msg');
 
-    // 1. Populate Sidebar Palette
-    vinylData.forEach(data => {
-      const item = document.createElement('div');
-      item.classList.add('palette-item');
-      
-      // Visual representation inside selector
-      const previewVinyl = document.createElement('div');
-      previewVinyl.classList.add('vinyl');
-      previewVinyl.style.setProperty('--label-color', data.color);
-      previewVinyl.style.transform = 'scale(0.6)'; // Scale down for sidebar
-      
-      const title = document.createElement('p');
-      title.textContent = data.title;
+    // Default starter vinyls when app loads
+    const starterAlbums = ["Abbey Road", "Discovery Daft Punk", "Thriller Michael Jackson", "Currents Tame Impala"];
 
-      item.appendChild(previewVinyl);
-      item.appendChild(title);
-      
-      // Add to wall on click
-      item.addEventListener('click', () => spawnVinyl(data));
-      
-      palette.appendChild(item);
+    // Initialize with starter albums
+    window.onload = () => {
+      fetchAlbums("Vinyl Classics");
+    };
+
+    // Trigger search on click or enter key
+    searchBtn.addEventListener('click', () => {
+      if(searchInput.value.trim() !== "") fetchAlbums(searchInput.value);
+    });
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && searchInput.value.trim() !== "") fetchAlbums(searchInput.value);
     });
 
-    // 2. Spawn Vinyl onto the Wall
-    function spawnVinyl(data) {
+    // Fetch Album Data from iTunes API
+    async function fetchAlbums(query) {
+      statusMsg.textContent = "Searching database...";
+      palette.innerHTML = "";
+      
+      try {
+        const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=album&limit=10`);
+        const data = await res.json();
+        
+        if(data.results.length === 0) {
+          statusMsg.textContent = "No albums found!";
+          return;
+        }
+        
+        statusMsg.textContent = "";
+        displayResults(data.results);
+      } catch (err) {
+        console.error(err);
+        statusMsg.textContent = "Error connecting to network.";
+      }
+    }
+
+    // Populate Sidebar with search results
+    function displayResults(albums) {
+      albums.forEach(album => {
+        // Upscale iTunes image from 100x100 to 400x400 for higher quality center label
+        const highResCover = album.artworkUrl100.replace("100x100bb.jpg", "400x400bb.jpg");
+
+        const item = document.createElement('div');
+        item.classList.add('palette-item');
+        
+        const previewVinyl = document.createElement('div');
+        previewVinyl.classList.add('vinyl');
+        previewVinyl.style.setProperty('--cover-art', `url('${highResCover}')`);
+        previewVinyl.style.transform = 'scale(0.55)'; 
+        
+        const title = document.createElement('p');
+        title.textContent = album.collectionName;
+
+        item.appendChild(previewVinyl);
+        item.appendChild(title);
+        
+        // When clicked, add it onto the physical wall
+        item.addEventListener('click', () => spawnVinyl(highResCover));
+        palette.appendChild(item);
+      });
+    }
+
+    // Spawn Vinyl onto the Wall
+    function spawnVinyl(coverUrl) {
       const vinylWrapper = document.createElement('div');
       vinylWrapper.classList.add('placed-vinyl', 'vinyl');
-      vinylWrapper.style.setProperty('--label-color', data.color);
+      vinylWrapper.style.setProperty('--cover-art', `url('${coverUrl}')`);
       
-      // Spawn slightly randomized near the center so they don't stack perfectly
-      const randomOffset = () => Math.floor(Math.random() * 60) - 30;
-      const startX = (wall.clientWidth / 2) - 60 + randomOffset();
-      const startY = (wall.clientHeight / 2) - 60 + randomOffset();
+      // Calculate a position right above the shelf by default
+      const shelfEl = document.querySelector('.pixel-shelf');
+      const startX = (wall.clientWidth / 2) - 55;
+      const startY = shelfEl.offsetTop - 115; // Plops it perfectly resting sitting on the shelf
       
       vinylWrapper.style.left = `${startX}px`;
       vinylWrapper.style.top = `${startY}px`;
 
-      // Double-click to remove
+      // Double-click to toss back into the sleeve (remove)
       vinylWrapper.addEventListener('dblclick', () => {
         vinylWrapper.remove();
       });
@@ -262,7 +360,7 @@
       makeDraggable(vinylWrapper);
     }
 
-    // 3. Modern Drag and Drop Logic (Pointer Events handles Mouse + Touch)
+    // Drag and Drop Logic (Pointer Events for Touch + Mouse)
     let activeElement = null;
     let startX, startY, initialLeft, initialTop;
 
@@ -270,9 +368,8 @@
       element.addEventListener('pointerdown', (e) => {
         activeElement = element;
         
-        // Bring clicked vinyl to the front
-        // Reset all others to z-index 1, make this one 10
-        document.querySelectorAll('.placed-vinyl').forEach(v => v.style.zIndex = 1);
+        // Layering depth control
+        document.querySelectorAll('.placed-vinyl').forEach(v => v.style.zIndex = 3);
         activeElement.style.zIndex = 10;
 
         startX = e.clientX;
@@ -292,7 +389,7 @@
         let newLeft = initialLeft + dx;
         let newTop = initialTop + dy;
 
-        // Boundary restrictions (Keep vinyls inside the wall boundaries)
+        // Boundaries matching pixel grid wall dimensions
         const maxLeft = wall.clientWidth - element.clientWidth;
         const maxTop = wall.clientHeight - element.clientHeight;
 
@@ -311,9 +408,9 @@
       });
     }
 
-    // 4. Clear Wall functionality
+    // Clear Wall
     clearBtn.addEventListener('click', () => {
-      wall.innerHTML = '';
+      document.querySelectorAll('.placed-vinyl').forEach(v => v.remove());
     });
   </script>
 </body>
