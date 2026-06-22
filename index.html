@@ -3,21 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Retro Vinyl Wall & Shelf Builder</title>
+  <title>Retro 8-Bit Vinyl Room Builder</title>
   <style>
     :root {
-      --bg-color: #1a1012;
-      --wall-color: #d4a373; /* Retro warm tan/wood tone */
-      --sidebar-color: #2c1a1d;
-      --text-color: #fefae0;
-      --pixel-border: 4px solid #4a2810;
+      --bg-color: #1f1315;
+      --wall-color: #5c3a21; /* Warm cozy brown wall */
+      --shelf-color: #3d2314;
+      --sidebar-color: #2b1810;
+      --text-color: #f7ebe1;
+      --pixel-border: 4px solid #26140a;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Courier New', Courier, monospace; /* Retro monospace font */
+      font-family: 'Courier New', Courier, monospace;
       font-weight: bold;
     }
 
@@ -29,170 +30,191 @@
       overflow: hidden;
     }
 
-    /* Sidebar / Control Panel */
+    /* Sidebar Panels */
     .sidebar {
-      width: 340px;
+      width: 360px;
       background-color: var(--sidebar-color);
-      padding: 20px;
+      padding: 15px;
       display: flex;
       flex-direction: column;
       gap: 15px;
-      border-right: 6px solid #4a2810;
+      border-right: 6px solid #26140a;
       z-index: 10;
+      overflow-y: auto;
     }
 
     .sidebar h2 {
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       text-align: center;
-      color: #faedcd;
+      color: #dfb18b;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      border-bottom: 4px dashed #4a2810;
-      padding-bottom: 10px;
+      border-bottom: 4px dashed #26140a;
+      padding-bottom: 8px;
     }
 
-    /* Search Box Styles */
+    .section-title {
+      font-size: 0.85rem;
+      color: #dfb18b;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    /* Input & Buttons */
     .search-container {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     .search-input {
-      background: #4a2810;
-      border: 3px solid #faedcd;
-      padding: 10px;
+      background: #26140a;
+      border: 3px solid #dfb18b;
+      padding: 8px;
       color: #fff;
       font-size: 0.9rem;
       outline: none;
     }
 
-    .search-btn {
-      background-color: #e63946;
+    .btn {
+      background-color: #c75a41;
       color: white;
-      border: 3px solid #4a2810;
-      padding: 10px;
+      border: 3px solid #26140a;
+      padding: 8px;
       cursor: pointer;
       text-transform: uppercase;
-      box-shadow: 0 4px 0 #9b111e;
+      box-shadow: 0 4px 0 #7a3121;
     }
-
-    .search-btn:active {
+    .btn:active {
       transform: translateY(4px);
       box-shadow: none;
     }
 
-    .palette {
-      flex: 1;
+    /* Customizer Grid */
+    .customizer-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      overflow-y: auto;
-      padding-right: 5px;
-      margin-top: 10px;
+      gap: 8px;
     }
+    .custom-item-btn {
+      background: #42281d;
+      border: 3px solid #26140a;
+      color: var(--text-color);
+      padding: 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .custom-item-btn:hover { background: #573729; }
 
     /* Vinyl Previews */
-    .palette-item {
-      background: #3d2326;
-      border: 3px solid #4a2810;
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+      background: #1f110a;
       padding: 8px;
+      border: 3px solid #26140a;
+    }
+    .palette-item {
+      background: #361f15;
+      border: 2px solid #26140a;
+      padding: 5px;
       cursor: pointer;
       text-align: center;
-      transition: transform 0.1s;
     }
-
-    .palette-item:hover {
-      background: #523034;
-      transform: scale(1.02);
-    }
-
     .palette-item p {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       margin-top: 5px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: #faedcd;
     }
 
-    /* The Retro Wall Container */
-    .wall-container {
+    /* Room Canvas */
+    .room-container {
       flex: 1;
-      position: relative;
-      padding: 30px;
+      padding: 25px;
+      background-color: var(--bg-color);
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #1a1012;
     }
 
-    /* Retro Pixelated Wall */
     .wall {
       width: 100%;
       height: 100%;
       background-color: var(--wall-color);
-      /* Retro brick/pixel texture pattern using linear gradients */
       background-image: 
-        linear-gradient(90deg, #ccd5ae 2px, transparent 2px),
-        linear-gradient(rgba(0,0,0,0.08) 2px, transparent 2px);
-      background-size: 32px 32px; 
-      border: 8px solid #4a2810;
+        linear-gradient(90deg, rgba(38,20,10,0.15) 2px, transparent 2px),
+        linear-gradient(rgba(38,20,10,0.15) 2px, transparent 2px);
+      background-size: 40px 40px;
+      border: 8px solid #26140a;
       position: relative;
       overflow: hidden;
-      box-shadow: inset 0 0 60px rgba(0,0,0,0.15);
+      box-shadow: inset 0 0 80px rgba(0,0,0,0.4);
     }
 
-    /* Simple, Brown, Pixelated Shelf */
-    .pixel-shelf {
+    /* Ambient Hanging Plants at Top */
+    .wall-plants {
       position: absolute;
-      bottom: 120px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 35px;
+      background: repeating-linear-gradient(90deg, transparent, transparent 40px, #3a5a40 40px, #3a5a40 60px, #4f772d 60px, #4f772d 80px);
+      opacity: 0.7;
+      border-bottom: 4px dashed #26140a;
+    }
+
+    /* 3-Row Shelf System */
+    .shelf {
+      position: absolute;
       left: 5%;
       width: 90%;
-      height: 20px;
-      background-color: #8338ec; /* Fallback */
-      background: #6f4e37; /* Coffee brown */
-      border: 4px solid #3a2212; /* Dark pixel outline */
-      /* Stacked box shadows give it a rigid 3D pixel-art extrude effect */
-      box-shadow: 
-        0 6px 0 #3a2212, 
-        0 14px 10px rgba(0,0,0,0.3),
-        inset 0 4px 0 #9c6644; /* Top pixel highlight */
+      height: 16px;
+      background: var(--shelf-color);
+      border: 3px solid #1a0d06;
+      box-shadow: 0 6px 0 #1a0d06, 0 10px 8px rgba(0,0,0,0.4), inset 0 3px 0 #5c3a21;
       z-index: 2;
     }
+    .shelf-1 { top: 28%; }
+    .shelf-2 { top: 56%; }
+    .shelf-3 { top: 84%; }
 
-    /* Vinyl Record Styling */
+    /* Vinyl Records Design */
     .vinyl {
-      width: 110px;
-      height: 110px;
+      width: 95px;
+      height: 95px;
       border-radius: 50%;
-      background: radial-gradient(circle, #111 30%, #222 40%, #111 48%, #1a1a1a 55%, #050505 70%);
-      box-shadow: 
-        inset 0 0 0 4px rgba(0,0,0,0.9),
-        inset 0 0 0 14px rgba(255,255,255,0.03),
-        inset 0 0 0 22px rgba(0,0,0,0.8),
-        0 6px 12px rgba(0,0,0,0.4);
+      background: radial-gradient(circle, #111 20%, #222 35%, #111 40%, #1a1a1a 50%, #050505 70%);
+      box-shadow: inset 0 0 0 3px #000, 0 6px 10px rgba(0,0,0,0.4);
       display: flex;
       justify-content: center;
       align-items: center;
       position: relative;
     }
-
-    /* Vinyl Center Label (The Album Cover Artwork) */
+    
+    /* ENLARGED Center Illustration Label */
     .vinyl::before {
       content: '';
-      width: 42px;
-      height: 42px;
+      width: 58px; /* Increased from 34px for much bigger art */
+      height: 58px;
       border-radius: 50%;
-      background-color: #e63946;
       background-image: var(--cover-art, none);
       background-size: cover;
       background-position: center;
       border: 2px solid #000;
       z-index: 4;
+      /* 8-Bit Pixelation Filters */
+      image-rendering: crisp-edges;
+      image-rendering: pixelated;
     }
-
-    /* Center Spindle Hole */
+    
     .vinyl::after {
       content: '';
       width: 6px;
@@ -203,67 +225,122 @@
       z-index: 5;
     }
 
-    /* Draggable Vinyls on the Wall */
-    .placed-vinyl {
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    .spinning {
+      animation: spin 2.5s linear infinite;
+    }
+
+    /* Movable Objects */
+    .movable-asset {
       position: absolute;
       cursor: move;
       touch-action: none;
       user-select: none;
+      z-index: 5;
     }
 
-    .placed-vinyl:active {
-      transform: scale(1.03);
-    }
-
-    /* Clear Button */
-    .clear-btn {
-      background-color: #bc6c25;
-      color: white;
-      border: 3px solid #4a2810;
+    /* Functional Record Player Design */
+    .turntable-frame {
+      width: 135px;
+      height: 105px;
+      background: #b5835a;
+      border: 4px solid #26140a;
+      box-shadow: 0 6px 0 #26140a, inset 0 4px 0 #dfb18b;
+      border-radius: 6px;
       padding: 10px;
-      cursor: pointer;
-      text-transform: uppercase;
-      box-shadow: 0 4px 0 #603813;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .turntable-platter {
+      width: 78px;
+      height: 78px;
+      background: #333;
+      border-radius: 50%;
+      border: 3px solid #26140a;
+    }
+    .needle-arm {
+      width: 8px;
+      height: 45px;
+      background: #ccd5ae;
+      border: 2px solid #26140a;
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      transform-origin: top center;
+      transform: rotate(15deg);
+      transition: transform 0.3s;
+      z-index: 6;
+    }
+    .playing .needle-arm {
+      transform: rotate(35deg);
     }
 
-    .clear-btn:hover { background-color: #dda15e; }
-    .clear-btn:active { transform: translateY(4px); box-shadow: none; }
+    /* Pixel Art Asset Wrapper */
+    .pixel-art-asset {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pixel-art-asset svg {
+      shape-rendering: crispEdges; /* Forces perfect browser grid pixel art rendering */
+    }
 
-    /* Loading indicator text */
     #status-msg {
-      font-size: 0.75rem;
-      color: #dda15e;
+      font-size: 0.7rem;
+      color: #dfb18b;
       text-align: center;
-      min-height: 15px;
+      min-height: 14px;
     }
   </style>
 </head>
 <body>
 
   <div class="sidebar">
-    <h2>Wall Builder</h2>
+    <h2>Cozy Room Builder</h2>
     
+    <!-- 1. Music/Vinyl Search Engine -->
     <div class="search-container">
-      <label for="search-input" style="font-size: 0.8rem; color: #faedcd;">SEARCH ALBUM COVERS:</label>
-      <input type="text" id="search-input" class="search-input" placeholder="e.g., Pink Floyd, Daft Punk...">
-      <button id="search-btn" class="search-btn">Find Vinyls</button>
+      <div class="section-title">Search Songs / Vinyls:</div>
+      <input type="text" id="search-input" class="search-input" placeholder="Artist or song name...">
+      <button id="search-btn" class="btn">Find Tracks</button>
       <div id="status-msg"></div>
     </div>
     
     <div class="palette" id="palette">
-      <!-- Search results will generate here -->
+      <!-- Live tracks loaded here -->
     </div>
 
-    <button class="clear-btn" id="clear-wall">Reset Wall</button>
+    <!-- 2. Room Customizer Grid -->
+    <div>
+      <div class="section-title">Add Pixel Furniture:</div>
+      <div class="customizer-grid">
+        <button class="custom-item-btn" onclick="spawnPixelAsset('coffee')">☕ Coffee Maker</button>
+        <button class="custom-item-btn" onclick="spawnPixelAsset('floorPlant')">🌿 Floor Plant</button>
+        <button class="custom-item-btn" onclick="spawnPixelAsset('hangingPlant')">🪴 Hanging Plant</button>
+        <button class="custom-item-btn" onclick="spawnPixelAsset('cat')">🐈 Cozy Cat</button>
+        <button class="custom-item-btn" onclick="spawnPixelAsset('dog')">🐕 Playful Dog</button>
+        <button class="custom-item-btn" onclick="spawnTurntable()">🎛️ Vinyl Player</button>
+      </div>
+    </div>
+
+    <button class="btn" id="clear-wall" style="background-color: #5c3a21; margin-top: auto;">Clear Room</button>
   </div>
 
-  <div class="wall-container">
+  <div class="room-container">
     <div class="wall" id="wall">
-      <!-- The Pixelated Shelf -->
-      <div class="pixel-shelf"></div>
-      <!-- Placed vinyls go here -->
+      <div class="wall-plants"></div>
+
+      <!-- The 3 Rows of Shelves -->
+      <div class="shelf shelf-1"></div>
+      <div class="shelf shelf-2"></div>
+      <div class="shelf shelf-3"></div>
     </div>
   </div>
+
+  <audio id="audio-engine" loop></audio>
 
   <script>
     const palette = document.getElementById('palette');
@@ -272,95 +349,154 @@
     const searchInput = document.getElementById('search-input');
     const searchBtn = document.getElementById('search-btn');
     const statusMsg = document.getElementById('status-msg');
+    const audioEngine = document.getElementById('audio-engine');
 
-    // Default starter vinyls when app loads
-    const starterAlbums = ["Abbey Road", "Discovery Daft Punk", "Thriller Michael Jackson", "Currents Tame Impala"];
+    let currentPlayingVinyl = null;
 
-    // Initialize with starter albums
-    window.onload = () => {
-      fetchAlbums("Vinyl Classics");
+    // Database of Open-Source Raw Pixel Art SVG Strings (Ensures zero missing links)
+    const pixelArtLibrary = {
+      cat: `<svg width="50" height="50" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 5h1v1H3V5zm9 0h1v1h-1V5z" fill="#26140a"/>
+              <path d="M2 6h3v1H2V6zm9 0h3v1h-3V6z" fill="#d4a373"/>
+              <path d="M2 7h12v5H2V7z" fill="#e7c19b"/>
+              <path d="M4 8h1v1H4V8zm7 0h1v1h-1V8z" fill="#26140a"/>
+              <path d="M7 9h2v1H7V9z" fill="#ffb4a2"/>
+              <path d="M5 12h6v2H5v-2z" fill="#d4a373"/>
+            </svg>`,
+      dog: `<svg width="55" height="55" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 4h3v4H3V4zm8 0h3v4h-3V4z" fill="#9c6644"/>
+              <path d="M5 6h6v6H5V6z" fill="#b07d62"/>
+              <path d="M6 8h1v1H6V8zm3 0h1v1H9V8z" fill="#000"/>
+              <path d="M7 10h2v1H7v-1z" fill="#26140a"/>
+              <path d="M4 12h8v2H4v-2z" fill="#7f5539"/>
+            </svg>`,
+      coffee: `<svg width="45" height="55" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 2h10v12H2V2z" fill="#4e5154"/>
+              <path d="M3 3h8v4H3V3z" fill="#a0a4a8"/>
+              <path d="M4 8h6v1H4V8z" fill="#ef233c"/>
+              <path d="M3 10h5v3H3v-3z" fill="#fff"/>
+              <path d="M4 11h3v2H4v-2z" fill="#6f4e37"/>
+              <path d="M12 5h2v4h-2V5z" fill="#2b2d42"/>
+            </svg>`,
+      floorPlant: `<svg width="50" height="65" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 2h4v3H6V2zm-3 3h10v2H3V5zm2 2h6v2H5V7z" fill="#38b000"/>
+              <path d="M7 1h2v2H7V1z" fill="#007200"/>
+              <path d="M4 9h8v5H4V9z" fill="#b76935"/>
+              <path d="M5 10h6v4H5v-4z" fill="#a0522d"/>
+            </svg>`,
+      hangingPlant: `<svg width="50" height="70" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 1h2v4H7V1z" fill="#ccd5ae"/>
+              <path d="M3 5h10v3H3V5z" fill="#bc6c25"/>
+              <path d="M2 8h2v5H2V8zm10 0h2v4h-2V8zm-5 0h2v6H7V8z" fill="#2d6a4f"/>
+              <path d="M4 9h2v2H4V9zm6 0h2v2h-2V9z" fill="#52b788"/>
+            </svg>`
     };
 
-    // Trigger search on click or enter key
-    searchBtn.addEventListener('click', () => {
-      if(searchInput.value.trim() !== "") fetchAlbums(searchInput.value);
-    });
-    searchInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && searchInput.value.trim() !== "") fetchAlbums(searchInput.value);
-    });
+    window.onload = () => { fetchTracks("Retro Synth"); };
 
-    // Fetch Album Data from iTunes API
-    async function fetchAlbums(query) {
-      statusMsg.textContent = "Searching database...";
+    searchBtn.addEventListener('click', () => { if(searchInput.value.trim()) fetchTracks(searchInput.value); });
+    searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && searchInput.value.trim()) fetchTracks(searchInput.value); });
+
+    async function fetchTracks(query) {
+      statusMsg.textContent = "Scanning catalog...";
       palette.innerHTML = "";
-      
       try {
-        const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=album&limit=10`);
+        const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=8`);
         const data = await res.json();
-        
-        if(data.results.length === 0) {
-          statusMsg.textContent = "No albums found!";
-          return;
-        }
-        
+        if(data.results.length === 0) { statusMsg.textContent = "No music tracks found."; return; }
         statusMsg.textContent = "";
         displayResults(data.results);
       } catch (err) {
-        console.error(err);
-        statusMsg.textContent = "Error connecting to network.";
+        statusMsg.textContent = "Network error loading library.";
       }
     }
 
-    // Populate Sidebar with search results
-    function displayResults(albums) {
-      albums.forEach(album => {
-        // Upscale iTunes image from 100x100 to 400x400 for higher quality center label
-        const highResCover = album.artworkUrl100.replace("100x100bb.jpg", "400x400bb.jpg");
-
+    function displayResults(songs) {
+      songs.forEach(song => {
+        const highResCover = song.artworkUrl100.replace("100x100bb.jpg", "300x300bb.jpg");
         const item = document.createElement('div');
         item.classList.add('palette-item');
         
         const previewVinyl = document.createElement('div');
         previewVinyl.classList.add('vinyl');
         previewVinyl.style.setProperty('--cover-art', `url('${highResCover}')`);
-        previewVinyl.style.transform = 'scale(0.55)'; 
+        previewVinyl.style.transform = 'scale(0.45)'; 
         
         const title = document.createElement('p');
-        title.textContent = album.collectionName;
+        title.textContent = song.trackName;
 
         item.appendChild(previewVinyl);
         item.appendChild(title);
         
-        // When clicked, add it onto the physical wall
-        item.addEventListener('click', () => spawnVinyl(highResCover));
+        item.addEventListener('click', () => spawnVinyl(highResCover, song.previewUrl));
         palette.appendChild(item);
       });
     }
 
-    // Spawn Vinyl onto the Wall
-    function spawnVinyl(coverUrl) {
-      const vinylWrapper = document.createElement('div');
-      vinylWrapper.classList.add('placed-vinyl', 'vinyl');
-      vinylWrapper.style.setProperty('--cover-art', `url('${coverUrl}')`);
+    function spawnVinyl(coverUrl, previewUrl) {
+      const vinyl = document.createElement('div');
+      vinyl.classList.add('movable-asset', 'vinyl', 'placed-vinyl');
+      vinyl.style.setProperty('--cover-art', `url('${coverUrl}')`);
+      vinyl.dataset.preview = previewUrl;
       
-      // Calculate a position right above the shelf by default
-      const shelfEl = document.querySelector('.pixel-shelf');
-      const startX = (wall.clientWidth / 2) - 55;
-      const startY = shelfEl.offsetTop - 115; // Plops it perfectly resting sitting on the shelf
-      
-      vinylWrapper.style.left = `${startX}px`;
-      vinylWrapper.style.top = `${startY}px`;
+      const shelf2 = document.querySelector('.shelf-2');
+      vinyl.style.left = `${(wall.clientWidth / 2) - 47}px`;
+      vinyl.style.top = `${shelf2.offsetTop - 90}px`;
 
-      // Double-click to toss back into the sleeve (remove)
-      vinylWrapper.addEventListener('dblclick', () => {
-        vinylWrapper.remove();
+      vinyl.addEventListener('dblclick', () => {
+        if (currentPlayingVinyl === vinyl) stopMusic();
+        vinyl.remove();
       });
 
-      wall.appendChild(vinylWrapper);
-      makeDraggable(vinylWrapper);
+      wall.appendChild(vinyl);
+      makeDraggable(vinyl);
     }
 
-    // Drag and Drop Logic (Pointer Events for Touch + Mouse)
+    function spawnPixelAsset(key) {
+      const decor = document.createElement('div');
+      decor.classList.add('movable-asset', 'pixel-art-asset');
+      decor.innerHTML = pixelArtLibrary[key];
+
+      const shelf3 = document.querySelector('.shelf-3');
+      const targetShelf = (key === 'hangingPlant') ? document.querySelector('.shelf-1') : shelf3;
+      
+      decor.style.left = `${Math.random() * (wall.clientWidth - 100) + 20}px`;
+      decor.style.top = `${targetShelf.offsetTop - 55}px`;
+
+      decor.addEventListener('dblclick', () => decor.remove());
+      wall.appendChild(decor);
+      makeDraggable(decor);
+    }
+
+    function spawnTurntable() {
+      if(document.querySelector('.turntable-frame')) return;
+
+      const player = document.createElement('div');
+      player.classList.add('movable-asset', 'turntable-frame');
+      
+      const platter = document.createElement('div');
+      platter.classList.add('turntable-platter');
+      
+      const arm = document.createElement('div');
+      arm.classList.add('needle-arm');
+
+      player.appendChild(platter);
+      player.appendChild(arm);
+
+      const shelf3 = document.querySelector('.shelf-3');
+      player.style.left = "40px";
+      player.style.top = `${shelf3.offsetTop - 100}px`;
+
+      player.addEventListener('dblclick', () => {
+        stopMusic();
+        player.remove();
+      });
+
+      wall.appendChild(player);
+      makeDraggable(player);
+    }
+
+    // Drag Engine
     let activeElement = null;
     let startX, startY, initialLeft, initialTop;
 
@@ -368,16 +504,20 @@
       element.addEventListener('pointerdown', (e) => {
         activeElement = element;
         
-        // Layering depth control
-        document.querySelectorAll('.placed-vinyl').forEach(v => v.style.zIndex = 3);
+        document.querySelectorAll('.movable-asset').forEach(v => v.style.zIndex = 5);
         activeElement.style.zIndex = 10;
+
+        if (activeElement.classList.contains('placed-vinyl') && currentPlayingVinyl === activeElement) {
+          stopMusic();
+        }
 
         startX = e.clientX;
         startY = e.clientY;
-        initialLeft = parseInt(activeElement.style.left, 10);
-        initialTop = parseInt(activeElement.style.top, 10);
+        initialLeft = parseInt(activeElement.style.left, 10) || 0;
+        initialTop = parseInt(activeElement.style.top, 10) || 0;
 
         activeElement.setPointerCapture(e.pointerId);
+        e.stopPropagation();
       });
 
       element.addEventListener('pointermove', (e) => {
@@ -389,7 +529,6 @@
         let newLeft = initialLeft + dx;
         let newTop = initialTop + dy;
 
-        // Boundaries matching pixel grid wall dimensions
         const maxLeft = wall.clientWidth - element.clientWidth;
         const maxTop = wall.clientHeight - element.clientHeight;
 
@@ -403,14 +542,57 @@
       element.addEventListener('pointerup', (e) => {
         if (activeElement === element) {
           activeElement.releasePointerCapture(e.pointerId);
+          if (activeElement.classList.contains('placed-vinyl')) {
+            checkTurntableSnap(activeElement);
+          }
           activeElement = null;
         }
       });
     }
 
-    // Clear Wall
+    function checkTurntableSnap(vinylEl) {
+      const playerEl = document.querySelector('.turntable-frame');
+      if (!playerEl) return;
+
+      const vRect = vinylEl.getBoundingClientRect();
+      const pRect = playerEl.getBoundingClientRect();
+
+      const isOverlapping = !(vRect.right < pRect.left || vRect.left > pRect.right || vRect.bottom < pRect.top || vRect.top > pRect.bottom);
+
+      if (isOverlapping) {
+        const platterEl = playerEl.querySelector('.turntable-platter');
+        const platterRect = platterEl.getBoundingClientRect();
+        const wallRect = wall.getBoundingClientRect();
+
+        const snapLeft = (platterRect.left - wallRect.left) + (platterRect.width / 2) - (vRect.width / 2);
+        const snapTop = (platterRect.top - wallRect.top) + (platterRect.height / 2) - (vRect.height / 2);
+
+        vinylEl.style.left = `${snapLeft}px`;
+        vinylEl.style.top = `${snapTop}px`;
+
+        vinylEl.classList.add('spinning');
+        playerEl.classList.add('playing');
+        currentPlayingVinyl = vinylEl;
+
+        if(vinylEl.dataset.preview) {
+          audioEngine.src = vinylEl.dataset.preview;
+          audioEngine.play().catch(e => console.log("Interaction required."));
+        }
+      }
+    }
+
+    function stopMusic() {
+      audioEngine.pause();
+      audioEngine.src = "";
+      if (currentPlayingVinyl) currentPlayingVinyl.classList.remove('spinning');
+      const playerEl = document.querySelector('.turntable-frame');
+      if (playerEl) playerEl.classList.remove('playing');
+      currentPlayingVinyl = null;
+    }
+
     clearBtn.addEventListener('click', () => {
-      document.querySelectorAll('.placed-vinyl').forEach(v => v.remove());
+      stopMusic();
+      document.querySelectorAll('.movable-asset').forEach(asset => asset.remove());
     });
   </script>
 </body>
