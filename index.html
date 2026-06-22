@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Minecraft Cozy Vinyl Room Builder</title>
+  <title>Vinyl Holder Racks Room Builder</title>
   <style>
     :root {
       --bg-color: #1f1315;
@@ -114,7 +114,7 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
-      max-height: 180px;
+      max-height: 150px;
       overflow-y: auto;
       background: #1f110a;
       padding: 8px;
@@ -163,14 +163,14 @@
       transition: background-color 0.4s;
     }
 
-    /* Ambient Cozy Light Glow Filter Overlay System */
+    /* Cozy Light Glow Overlay */
     .light-glow-overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(255, 190, 60, 0.18);
-      mix-blend-mode: color-dodge;
+      background: radial-gradient(circle at var(--lamp-x, 40%) var(--lamp-y, 70%), rgba(255, 158, 44, 0.35) 0%, rgba(92, 58, 33, 0) 75%);
+      mix-blend-mode: screen;
       pointer-events: none;
-      z-index: 1;
+      z-index: 4;
       opacity: 0;
       transition: opacity 0.3s ease;
     }
@@ -178,13 +178,10 @@
       opacity: 1;
     }
 
-    /* Ambient Hanging Plants at Top */
+    /* Hanging Plants */
     .wall-plants {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 35px;
+      top: 0; left: 0; width: 100%; height: 35px;
       background: repeating-linear-gradient(90deg, transparent, transparent 40px, #3a5a40 40px, #3a5a40 60px, #4f772d 60px, #4f772d 80px);
       opacity: 0.7;
       border-bottom: 4px dashed #26140a;
@@ -193,9 +190,7 @@
     /* 3-Row Shelf System */
     .shelf {
       position: absolute;
-      left: 3%;
-      width: 94%;
-      height: 20px;
+      left: 3%; width: 94%; height: 20px;
       background: var(--shelf-color);
       border: 4px solid #1a0d06;
       box-shadow: 0 8px 0 #1a0d06, 0 12px 10px rgba(0,0,0,0.5), inset 0 4px 0 #5c3a21;
@@ -205,10 +200,21 @@
     .shelf-2 { top: 56%; }
     .shelf-3 { top: 86%; }
 
-    /* Large Vinyl Records Design */
+    /* RETRO VISIBLE HOLDER RACKS */
+    .rack-slot {
+      position: absolute;
+      width: 135px;
+      height: 25px;
+      background: #211107;
+      border: 4px solid #140904;
+      border-top: none; /* Open bracket style slot */
+      z-index: 1;
+      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.4);
+    }
+
+    /* Large Vinyl Records */
     .vinyl {
-      width: 135px; 
-      height: 135px;
+      width: 135px; height: 135px;
       border-radius: 50%;
       background: radial-gradient(circle, #111 20%, #222 35%, #111 40%, #1a1a1a 50%, #050505 70%);
       box-shadow: inset 0 0 0 4px #000, 0 8px 14px rgba(0,0,0,0.5);
@@ -217,11 +223,9 @@
       align-items: center;
       position: relative;
     }
-    
     .vinyl::before {
       content: '';
-      width: 90px; 
-      height: 90px;
+      width: 90px; height: 90px;
       border-radius: 50%;
       background-image: var(--cover-art, none);
       background-size: cover;
@@ -230,25 +234,28 @@
       z-index: 4;
       image-rendering: pixelated;
     }
-    
     .vinyl::after {
       content: '';
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       border-radius: 50%;
       background-color: var(--wall-color);
       position: absolute;
       z-index: 5;
     }
 
-    @keyframes spin {
-      100% { transform: rotate(360deg); }
+    /* PIXEL POP VISUAL ANIMATION */
+    @keyframes pixelPop {
+      0% { transform: scale(1); filter: brightness(1); }
+      50% { transform: scale(1.12); filter: brightness(1.4); }
+      100% { transform: scale(1); filter: brightness(1); }
     }
-    .spinning {
-      animation: spin 2.5s linear infinite;
+    .pixel-popping {
+      animation: pixelPop 0.2s ease-out;
     }
 
-    /* Movable Objects Wrapper */
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .spinning { animation: spin 2.5s linear infinite; }
+
     .movable-asset {
       position: absolute;
       cursor: move;
@@ -257,112 +264,55 @@
       z-index: 5;
     }
 
-    /* Interactive 8-Bit Speech Input Bubble */
-    .pet-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
+    /* Speech Input Bubble */
+    .pet-container { display: flex; flex-direction: column; align-items: center; }
     .speech-bubble {
-      background: #fff;
-      border: 3px solid #000;
-      border-radius: 4px;
-      padding: 3px 6px;
-      position: relative;
-      margin-bottom: 8px;
+      background: #fff; border: 3px solid #000; border-radius: 4px;
+      padding: 3px 6px; position: relative; margin-bottom: 8px;
       box-shadow: 3px 3px 0 rgba(0,0,0,0.2);
     }
     .speech-bubble::after {
-      content: '';
-      position: absolute;
-      bottom: -9px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 6px;
-      height: 6px;
-      background: #fff;
-      border-right: 3px solid #000;
-      border-bottom: 3px solid #000;
+      content: ''; position: absolute; bottom: -9px; left: 50%;
+      transform: translateX(-50%); width: 6px; height: 6px;
+      background: #fff; border-right: 3px solid #000; border-bottom: 3px solid #000;
     }
-
     .speech-bubble input {
-      border: none;
-      outline: none;
-      font-family: 'Courier New', monospace;
-      font-size: 0.75rem;
-      width: 65px;
-      text-align: center;
-      font-weight: bold;
-      color: #000;
+      border: none; outline: none; font-family: 'Courier New', monospace;
+      font-size: 0.75rem; width: 65px; text-align: center; font-weight: bold; color: #000;
     }
 
-    /* Functional Record Player Design */
+    /* Turntable */
     .turntable-frame {
-      width: 190px; 
-      height: 145px;
-      background: #b5835a;
-      border: 5px solid #26140a;
+      width: 190px; height: 145px;
+      background: #b5835a; border: 5px solid #26140a;
       box-shadow: 0 8px 0 #26140a, inset 0 5px 0 #dfb18b;
-      border-radius: 8px;
-      padding: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
+      border-radius: 8px; padding: 12px;
+      display: flex; align-items: center; justify-content: flex-start;
     }
-    .turntable-platter {
-      width: 115px; 
-      height: 115px;
-      background: #333;
-      border-radius: 50%;
-      border: 4px solid #26140a;
-    }
+    .turntable-platter { width: 115px; height: 115px; background: #333; border-radius: 50%; border: 4px solid #26140a; }
     .needle-arm {
-      width: 10px;
-      height: 65px;
-      background: #ccd5ae;
-      border: 3px solid #26140a;
-      position: absolute;
-      right: 25px;
-      top: 20px;
-      transform-origin: top center;
-      transform: rotate(15deg);
-      transition: transform 0.3s;
-      z-index: 6;
+      width: 10px; height: 65px; background: #ccd5ae; border: 3px solid #26140a;
+      position: absolute; right: 25px; top: 20px;
+      transform-origin: top center; transform: rotate(15deg);
+      transition: transform 0.3s; z-index: 6;
     }
-    .playing .needle-arm {
-      transform: rotate(33deg);
-    }
+    .playing .needle-arm { transform: rotate(33deg); }
 
-    /* Interactive Desk Lamp Engine Layout */
-    .lamp-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer !important;
-    }
+    /* Arched Floor Lamp */
+    .lamp-wrapper { display: flex; flex-direction: column; align-items: center; cursor: pointer !important; }
     .lamp-beam {
-      width: 90px;
-      height: 130px;
-      background: linear-gradient(rgba(255,236,158,0.5), transparent);
-      clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%);
-      margin-top: -4px;
-      display: none;
-      pointer-events: none;
+      width: 120px; height: 180px;
+      background: linear-gradient(rgba(255,200,80,0.45), transparent);
+      clip-path: polygon(25% 0%, 75% 0%, 100% 100%, 0% 100%);
+      position: absolute; left: -55px; top: 30px;
+      display: none; pointer-events: none;
     }
-    .lamp-wrapper.on .lamp-beam {
-      display: block;
-    }
+    .lamp-wrapper.on .lamp-beam { display: block; }
 
-    .pixel-art-asset svg {
-      shape-rendering: crispEdges; 
-    }
+    .pixel-art-asset svg { shape-rendering: crispEdges; }
 
     #status-msg {
-      font-size: 0.75rem;
-      color: #dfb18b;
-      text-align: center;
-      min-height: 14px;
+      font-size: 0.75rem; color: #dfb18b; text-align: center; min-height: 14px;
     }
   </style>
 </head>
@@ -371,6 +321,7 @@
   <div class="sidebar">
     <h2>Cozy Room Builder</h2>
     
+    <!-- 1. Music Search Engine -->
     <div class="search-container">
       <div class="section-title">Search Songs / Vinyls:</div>
       <input type="text" id="search-input" class="search-input" placeholder="Artist or song name...">
@@ -380,14 +331,17 @@
     
     <div class="palette" id="palette"></div>
 
+    <!-- 2. Room Customizer Grid -->
     <div>
       <div class="section-title">Add Large Furniture:</div>
       <div class="customizer-grid">
         <button class="custom-item-btn" onclick="spawnPixelAsset('coffee')">☕ Big Coffee Maker</button>
+        <button class="custom-item-btn" onclick="spawnMug('#2b2d42', 'Black')">🖤 Black Mug</button>
+        <button class="custom-item-btn" onclick="spawnMug('#e63946', 'Red')">❤️ Red Mug</button>
+        <button class="custom-item-btn" onclick="spawnLamp()">💡 Arched Floor Lamp</button>
         <button class="custom-item-btn" onclick="spawnPixelAsset('floorPlant')">🌿 Floor Plant</button>
         <button class="custom-item-btn" onclick="spawnPixelAsset('hangingPlant')">🪴 Hanging Plant</button>
-        <button class="custom-item-btn" onclick="spawnLamp()">💡 Desk Lamp</button>
-        <button class="custom-item-btn" onclick="spawnPet('cat')">🐈 Minecraft Cat</button>
+        <button class="custom-item-btn" onclick="spawnPet('cat')">🐈 Cute Pixel Cat</button>
         <button class="custom-item-btn" onclick="spawnPet('dog')">🐕 Minecraft Dog</button>
         <button class="custom-item-btn" onclick="spawnTurntable()">🎛️ Vinyl Player</button>
       </div>
@@ -401,6 +355,7 @@
       <div class="light-glow-overlay"></div>
       <div class="wall-plants"></div>
 
+      <!-- The 3 Rows of Shelves -->
       <div class="shelf shelf-1"></div>
       <div class="shelf shelf-2"></div>
       <div class="shelf shelf-3"></div>
@@ -419,39 +374,50 @@
     const audioEngine = document.getElementById('audio-engine');
 
     let currentPlayingVinyl = null;
+    const racks = []; // Holds state coordinates for structural rack attachments
 
-    // Custom Open-Source Minecraft-Inspired SVG Vector Databases
     const pixelArtLibrary = {
-      // Minecraft Cat: Blocky Head, Big Square Eye pixel structure, Pink Block Nose
-      cat_stand: `<svg width="115" height="85" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 5h8v6H1V5z" fill="#d4a373"/> <path d="M9 3h6v6H9V3z" fill="#e7c19b"/> <path d="M11 1h2v2h-2V1zm4 1h2v2h-2V2z" fill="#26140a"/> <path d="M9 4h2v2H9V4zm4 0h2v2h-2V4z" fill="#fff"/> <path d="M10 4h1v1h-1V4zm4 4h1v1h-1V8z" fill="#55a630"/> <path d="M12 6h2v1h-2V6z" fill="#ffb4a2"/> <path d="M3 11h2v5H3v-5zm4 1h2v4H7v-4zm6-1h2v5h-2v-5z" fill="#26140a"/> <path d="M0 3h2v5H0V3z" fill="#d4a373"/> </svg>`,
-      cat_sit: `<svg width="115" height="85" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M4 6h6v8H4V6z" fill="#e7c19b"/> <path d="M6 2h6v6H6V2z" fill="#d4a373"/> <path d="M7 0h2v2H7V0zm4 0h2v2h-2V0z" fill="#26140a"/> 
-                  <path d="M6 3h2v2H6V3zm4 0h2v2h-2V3z" fill="#fff"/>
-                  <path d="M7 3h1v1H7V3zm4 3h1v1h-1V6z" fill="#55a630"/> <path d="M9 5h2v1H9V5z" fill="#ffb4a2"/> <path d="M4 14h3v2H4v-2zm4 0h3v2H8v-2z" fill="#26140a"/> </svg>`,
-      // Minecraft Dog: Distinct boxy protruding square snout, dark eyes
-      dog_stand: `<svg width="120" height="90" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2 5h10v6H2V5z" fill="#b07d62"/> <path d="M12 3h6v6h-6V3z" fill="#9c6644"/> <path d="M18 5h3v3h-3V5z" fill="#7f5539"/> <path d="M19 4h2v1h-2V4z" fill="#000"/> <path d="M13 4h2v2h-2V4zm3 0h2v2h-2V4z" fill="#fff"/> <path d="M14 4h1v1h-1V4zm3 0h1v1h-1V4z" fill="#000"/> <path d="M4 11h2v5H4v-5zm6 0h2v5h-2v-5zm6-2h2v7h-2V9z" fill="#26140a"/> </svg>`,
-      dog_sit: `<svg width="120" height="90" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M5 6h7v8H5V6z" fill="#b07d62"/> <path d="M8 2h6v6H8V2z" fill="#9c6644"/> <path d="M14 4h3v3h-3V4z" fill="#7f5539"/> <path d="M15 3h2v1h-2V3z" fill="#000"/>
-                  <path d="M9 3h2v2H9V3zm3 0h2v2h-2V3z" fill="#fff"/>
-                  <path d="M10 3h1v1h-1V3zm3 0h1v1h-1V3z" fill="#000"/>
-                  <path d="M5 14h3v2H5v-2zm5 0h3v2h-3v-2z" fill="#26140a"/>
-                </svg>`,
-      // OVERSIZED Coffee Machine Design (Scales visually huge)
-      coffee: `<svg width="105" height="135" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1 0h12v16H1V0z" fill="#3a3d40"/>
-              <path d="M2 1h10v6H2V1z" fill="#7a8085"/>
-              <path d="M3 2h2v1H3V2zm4 0h4v3H7V2z" fill="#1d3557"/>
-              <path d="M2 9h9v6H2V9z" fill="#fff"/>
-              <path d="M3 10h7v4H3v-4z" fill="#582f0e"/>
-              <path d="M13 3h2v7h-2V3z" fill="#1a1c1e"/>
-            </svg>`,
+      cat_stand: `<svg width="115" height="85" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 5h8v6H1V5z" fill="#d4a373"/><path d="M9 3h6v6H9V3z" fill="#e7c19b"/><path d="M9 1h2v2H9V1zm4 0h2v2h-2V1z" fill="#d4a373"/><path d="M10 4h2v2h-2V4zm3 0h2v2h-2V4z" fill="#fff"/><path d="M10 5h1v1h-1V5zm3 0h1v1h-1V5z" fill="#26140a"/><path d="M12 6h1v1h-1V6z" fill="#ffb4a2"/><path d="M3 11h2v5H3v-5zm4 1h2v4H7v-4zm6-1h2v5h-2v-5z" fill="#26140a"/><path d="M0 3h2v5H0V3z" fill="#d4a373"/></svg>`,
+      cat_sit: `<svg width="115" height="85" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h6v8H4V6z" fill="#e7c19b"/><path d="M6 2h6v6H6V2z" fill="#d4a373"/><path d="M6 0h2v2H6V0zm4 0h2v2h-2V0z" fill="#d4a373"/><path d="M7 3h2v2H7V3zm3 0h2v2h-2V3z" fill="#fff"/><path d="M7 4h1v1H7V4zm3 0h1v1h-1V4z" fill="#26140a"/><path d="M9 5h1v1H9V5z" fill="#ffb4a2"/><path d="M4 14h3v2H4v-2zm4 0h3v2H8v-2z" fill="#26140a"/></svg>`,
+      dog_stand: `<svg width="120" height="90" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 5h10v6H2V5z" fill="#b07d62"/><path d="M12 3h6v6h-6V3z" fill="#9c6644"/><path d="M18 5h3v3h-3V5z" fill="#7f5539"/><path d="M19 4h2v1h-2V4z" fill="#000"/><path d="M13 4h2v2h-2V4zm3 0h2v2h-2V4z" fill="#fff"/><path d="M14 4h1v1h-1V4zm3 0h1v1h-1V4z" fill="#000"/><path d="M4 11h2v5H4v-5zm6 0h2v5h-2v-5zm6-2h2v7h-2V9z" fill="#26140a"/></svg>`,
+      dog_sit: `<svg width="120" height="90" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 6h7v8H5V6z" fill="#b07d62"/><path d="M8 2h6v6H8V2z" fill="#9c6644"/><path d="M14 4h3v3h-3V4z" fill="#7f5539"/><path d="M15 3h2v1h-2V3z" fill="#000"/><path d="M9 3h2v2H9V3zm3 0h2v2h-2V3z" fill="#fff"/><path d="M10 3h1v1h-1V3zm3 0h1v1h-1V3z" fill="#000"/><path d="M5 14h3v2H5v-2zm5 0h3v2h-3v-2z" fill="#26140a"/></svg>`,
+      coffee: `<svg class="coffee-machine-target" width="105" height="135" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 0h12v16H1V0z" fill="#3a3d40"/><path d="M2 1h10v6H2V1z" fill="#7a8085"/><path d="M3 2h2v1H3V2zm4 0h4v3H7V2z" fill="#1d3557"/><path d="M2 9h9v6H2V9z" fill="#fff"/><path d="M3 13h7v2H3v-2z" fill="#222"/><path d="M13 3h2v7h-2V3z" fill="#1a1c1e"/></svg>`,
       floorPlant: `<svg width="90" height="120" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 1h6v4H5V1zm-4 4h14v3H1V5zm3 3h10v2H4V8z" fill="#38b000"/><path d="M3 8h10v7H3V8z" fill="#b76935"/><path d="M4 9h8v5H4V9z" fill="#a0522d"/></svg>`,
       hangingPlant: `<svg width="85" height="120" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 0h2v5H7V0z" fill="#ccd5ae"/><path d="M2 5h12v4H2V5z" fill="#bc6c25"/><path d="M1 9h3v6H1V9zm11 0h3v5h-3V9zm-6 0h4v7H6V9z" fill="#2d6a4f"/></svg>`
     };
 
-    window.onload = () => { fetchTracks("8-Bit Lofi"); };
+    window.onload = () => { 
+      buildVisibleRacks();
+      fetchTracks("Cozy Vinyl Lofi"); 
+    };
+
+    // Construct the 9 Visual Holder Racks (3 per shelf)
+    function buildVisibleRacks() {
+      racks.length = 0;
+      for (let i = 0; i < 9; i++) {
+        const shelfIndex = Math.floor(i / 3) + 1;
+        const slotIndex = i % 3;
+        const targetShelf = document.querySelector(`.shelf-${shelfIndex}`);
+        
+        const horizontalSpacing = wall.clientWidth / 3;
+        const startX = (horizontalSpacing * slotIndex) + (horizontalSpacing / 2) - 67;
+        const startY = targetShelf.offsetTop - 18; // Sits nested cleanly right above shelf bounding edges
+
+        const rackEl = document.createElement('div');
+        rackEl.classList.add('rack-slot');
+        rackEl.style.left = `${startX}px`;
+        rackEl.style.top = `${startY}px`;
+        wall.appendChild(rackEl);
+
+        racks.push({
+          id: i,
+          el: rackEl,
+          left: startX,
+          top: targetShelf.offsetTop - 128, // Snap placement target position for vinyl elements
+          occupiedBy: null
+        });
+      }
+    }
 
     searchBtn.addEventListener('click', () => { if(searchInput.value.trim()) fetchTracks(searchInput.value); });
     searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && searchInput.value.trim()) fetchTracks(searchInput.value); });
@@ -492,10 +458,42 @@
       });
     }
 
+    // Attachment Systems: Locks Vinyl back into specific physical rack arrays
+    function lockVinylToRack(vinylEl, rack) {
+      vinylEl.style.left = `${rack.left}px`;
+      vinylEl.style.top = `${rack.top}px`;
+      vinylEl.dataset.locked = "true";
+      vinylEl.dataset.rackId = rack.id;
+      rack.occupiedBy = vinylEl;
+      vinylEl.style.cursor = "pointer";
+    }
+
+    // Click-to-Remove Mechanic handling individual pop shifts
+    function unlockVinylFromRack(vinylEl) {
+      const rackId = vinylEl.dataset.rackId;
+      if (rackId !== undefined) {
+        racks[rackId].occupiedBy = null;
+      }
+      vinylEl.dataset.locked = "false";
+      delete vinylEl.dataset.rackId;
+      vinylEl.style.cursor = "move";
+
+      // Trigger structural pixel pulse visual feedback shift
+      vinylEl.classList.add('pixel-popping');
+      vinylEl.addEventListener('animationend', () => {
+        vinylEl.classList.remove('pixel-popping');
+      }, { once: true });
+
+      statusMsg.textContent = "🔓 VINYL UNLOCKED! FREELY DRAGGABLE.";
+      statusMsg.style.color = "#dfb18b";
+      setTimeout(() => { if(statusMsg.textContent.includes("UNLOCKED")) statusMsg.textContent = ""; }, 2000);
+    }
+
     function spawnVinyl(coverUrl, previewUrl) {
-      const totalPlaced = document.querySelectorAll('.placed-vinyl').length;
-      if (totalPlaced >= 9) {
-        statusMsg.textContent = "⚠️ NO ROOM! MAX 9 VINYLS ALLOWED.";
+      // Core Attachment System Finder loops for open slots
+      const freeRack = racks.find(r => r.occupiedBy === null);
+      if (!freeRack) {
+        statusMsg.textContent = "⚠️ ALL HOLDER RACKS FULL! MAX 9 VINYLS.";
         statusMsg.style.color = "#ff4757";
         return;
       }
@@ -505,28 +503,29 @@
       vinyl.style.setProperty('--cover-art', `url('${coverUrl}')`);
       vinyl.dataset.preview = previewUrl;
       
-      const shelfIndex = Math.floor(totalPlaced / 3) + 1; 
-      const slotIndex = totalPlaced % 3; 
-      const targetShelf = document.querySelector(`.shelf-${shelfIndex}`);
-      
-      const horizontalSpacing = wall.clientWidth / 3;
-      const startX = (horizontalSpacing * slotIndex) + (horizontalSpacing / 2) - 67;
-      const startY = targetShelf.offsetTop - 128;
-
-      vinyl.style.left = `${startX}px`;
-      vinyl.style.top = `${startY}px`;
+      // Auto-fly attachment route instantiation
+      lockVinylToRack(vinyl, freeRack);
 
       vinyl.addEventListener('dblclick', () => {
         if (currentPlayingVinyl === vinyl) stopMusic();
+        if (vinyl.dataset.rackId !== undefined) {
+          racks[vinyl.dataset.rackId].occupiedBy = null;
+        }
         vinyl.remove();
         statusMsg.textContent = ""; 
+      });
+
+      // Hook up single-click extraction filter loop trigger mechanics
+      vinyl.addEventListener('click', () => {
+        if (vinyl.dataset.locked === "true") {
+          unlockVinylFromRack(vinyl);
+        }
       });
 
       wall.appendChild(vinyl);
       makeDraggable(vinyl);
     }
 
-    // Advanced Voice Command Parsing Architecture ("sit" / "stand")
     function spawnPet(type) {
       const container = document.createElement('div');
       container.classList.add('movable-asset', 'pet-container');
@@ -550,10 +549,8 @@
       container.style.left = `${Math.random() * (wall.clientWidth - 150) + 20}px`;
       container.style.top = `${shelf3.offsetTop - 110}px`;
 
-      // Sanitized exact string evaluation match parsing engine
       input.addEventListener('input', (e) => {
-        const cleanedCmd = e.target.value.toLowerCase().trim().replace(/[^a-z]/g, '');
-        
+        const cleanedCmd = e.target.value.toLowerCase().trim();
         if (cleanedCmd === 'sit') {
           artWrapper.innerHTML = pixelArtLibrary[type + '_sit'];
         } else if (cleanedCmd === 'stand') {
@@ -569,34 +566,65 @@
       makeDraggable(container);
     }
 
-    // Spawn Lighting Apparatus Deskside Lamp Setup Engine
+    function buildMugSvg(hexColor, isFilled) {
+      const liquidFill = isFilled ? "#582f0e" : "transparent";
+      return `<svg width="55" height="55" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 4h9v9H2V4z" fill="${hexColor}"/>
+                <path d="M11 6h3v5h-3V6zm1 1h1v3h-1V7z" fill="${hexColor}"/>
+                <path d="M3 5h7v3H3V5z" fill="${liquidFill}"/>
+              </svg>`;
+    }
+
+    function spawnMug(hexColor, name) {
+      const mug = document.createElement('div');
+      mug.classList.add('movable-asset', 'pixel-art-asset', 'mug-asset');
+      mug.dataset.color = hexColor;
+      mug.dataset.filled = "false";
+      mug.innerHTML = buildMugSvg(hexColor, false);
+
+      const shelf3 = document.querySelector('.shelf-3');
+      mug.style.left = `${Math.random() * (wall.clientWidth - 100) + 50}px`;
+      mug.style.top = `${shelf3.offsetTop - 45}px`;
+
+      mug.addEventListener('dblclick', () => mug.remove());
+      wall.appendChild(mug);
+      makeDraggable(mug);
+    }
+
     function spawnLamp() {
       const wrapper = document.createElement('div');
       wrapper.classList.add('movable-asset', 'lamp-wrapper', 'pixel-art-asset');
       
-      // Retro Desk Lamp Vector Asset Outline String
-      const lampSvg = `<svg width="70" height="70" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M5 14h6v2H5v-2z" fill="#4a4e69"/> <path d="M7 7h2v7H7V7z" fill="#9a8c98"/> <path d="M3 3h10v4H3V3z" fill="#e63946"/> <path d="M4 7h8v1H4V7z" fill="#f4a261"/> </svg>`;
+      const archedLampSvg = `
+        <svg width="120" height="210" viewBox="0 0 32 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 52h10v4H18v-4z" fill="#2d3142"/>
+          <path d="M22 12h2v40h-2V12z" fill="#9a8c98"/>
+          <path d="M10 6h14v2H10V6zM8 8h2v4H8V8zm14 8h2v4h-2v-4z" fill="#9a8c98"/>
+          <path d="M4 12h6v6H4v-6z" fill="#e63946"/> 
+          <path d="M5 18h4v1H5v-1z" fill="#ffd166"/>
+        </svg>
+      `;
 
       const beam = document.createElement('div');
       beam.classList.add('lamp-beam');
 
-      wrapper.innerHTML = lampSvg;
+      wrapper.innerHTML = archedLampSvg;
       wrapper.appendChild(beam);
 
       const shelf3 = document.querySelector('.shelf-3');
-      wrapper.style.left = "280px";
-      wrapper.style.top = `${shelf3.offsetTop - 62}px`;
+      wrapper.style.left = "480px";
+      wrapper.style.top = `${shelf3.offsetTop - 194}px`;
 
-      // Interactive State Toggle Click Hook Interaction Routing
       wrapper.addEventListener('click', (e) => {
-        // Stop drag events from accidentally toggling power states
         if (wrapper.dataset.dragging === "true") return;
-
         wrapper.classList.toggle('on');
-        const processingLamps = document.querySelectorAll('.lamp-wrapper.on').length;
         
-        if (processingLamps > 0) {
+        const currentLampsOn = document.querySelectorAll('.lamp-wrapper.on');
+        if (currentLampsOn.length > 0) {
+          const leftCoords = parseInt(wrapper.style.left, 10) + 15; 
+          const topCoords = parseInt(wrapper.style.top, 10) + 20;
+          wall.style.setProperty('--lamp-x', `${(leftCoords / wall.clientWidth) * 100}%`);
+          wall.style.setProperty('--lamp-y', `${(topCoords / wall.clientHeight) * 100}%`);
           wall.classList.add('lamp-on');
         } else {
           wall.classList.remove('lamp-on');
@@ -615,6 +643,7 @@
     function spawnPixelAsset(key) {
       const decor = document.createElement('div');
       decor.classList.add('movable-asset', 'pixel-art-asset');
+      if (key === 'coffee') decor.classList.add('coffee-machine-instance');
       decor.innerHTML = pixelArtLibrary[key];
 
       const shelf3 = document.querySelector('.shelf-3');
@@ -656,7 +685,7 @@
       makeDraggable(player);
     }
 
-    // Drag Engine with input filter shield protection bypass locks
+    // Drag Engine with Locked Attachment Logic Locks
     let activeElement = null;
     let startX, startY, initialLeft, initialTop;
     let dragMoveDetected = false;
@@ -664,6 +693,9 @@
     function makeDraggable(element) {
       element.addEventListener('pointerdown', (e) => {
         if (e.target.tagName === 'INPUT') return;
+        
+        // Lock Shield: If a vinyl is currently attached inside a slot, block normal click drags
+        if (element.classList.contains('placed-vinyl') && element.dataset.locked === "true") return;
 
         activeElement = element;
         activeElement.dataset.dragging = "false";
@@ -713,20 +745,72 @@
         if (activeElement === element) {
           activeElement.releasePointerCapture(e.pointerId);
           
-          // Clear dragging state slightly after release loop sequence completes
           setTimeout(() => { if(element) element.dataset.dragging = "false"; }, 50);
 
+          // Interaction collision checks logic
           if (activeElement.classList.contains('placed-vinyl')) {
-            checkTurntableSnap(activeElement);
+            const snappedToPlayer = checkTurntableSnap(activeElement);
+            if (!snappedToPlayer) {
+              checkRackSlotSnap(activeElement);
+            }
           }
+          if (activeElement.classList.contains('mug-asset')) {
+            checkCoffeeMachineFillProximity(activeElement);
+          }
+          
           activeElement = null;
         }
       });
     }
 
+    // Attachment Systems Check: Scans for overlapping vacant slots on releases
+    function checkRackSlotSnap(vinylEl) {
+      const vRect = vinylEl.getBoundingClientRect();
+      
+      for (let i = 0; i < racks.length; i++) {
+        const rack = racks[i];
+        if (rack.occupiedBy !== null) continue;
+        
+        const rRect = rack.el.getBoundingClientRect();
+        const isOverlapping = !(vRect.right < rRect.left || vRect.left > rRect.right || vRect.bottom < rRect.top || vRect.top > rRect.bottom);
+        
+        if (isOverlapping) {
+          lockVinylToRack(vinylEl, rack);
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function checkCoffeeMachineFillProximity(mugEl) {
+      const machineEl = document.querySelector('.coffee-machine-instance');
+      if (!machineEl) return;
+
+      const mRect = mugEl.getBoundingClientRect();
+      const cRect = machineEl.getBoundingClientRect();
+
+      const isOverlapping = !(mRect.right < cRect.left || mRect.left > cRect.right || mRect.bottom < cRect.top || mRect.top > cRect.bottom);
+
+      if (isOverlapping) {
+        const wallRect = wall.getBoundingClientRect();
+        const targetLeft = (cRect.left - wallRect.left) + (cRect.width / 2) - (mRect.width / 2) - 4;
+        const targetTop = (cRect.top - wallRect.top) + cRect.height - mRect.height - 10;
+
+        mugEl.style.left = `${targetLeft}px`;
+        mugEl.style.top = `${targetTop}px`;
+
+        mugEl.dataset.filled = "true";
+        mugEl.innerHTML = buildMugSvg(mugEl.dataset.color, true);
+        
+        statusMsg.textContent = "☕ MUG FILLED WITH FRESH COFFEE!";
+        statusMsg.style.color = "#dfb18b";
+        setTimeout(() => { if(statusMsg.textContent.includes("FRESH")) statusMsg.textContent = ""; }, 3000);
+      }
+    }
+
     function checkTurntableSnap(vinylEl) {
       const playerEl = document.querySelector('.turntable-frame');
-      if (!playerEl) return;
+      if (!playerEl) return false;
 
       const vRect = vinylEl.getBoundingClientRect();
       const pRect = playerEl.getBoundingClientRect();
@@ -752,7 +836,9 @@
           audioEngine.src = vinylEl.dataset.preview;
           audioEngine.play().catch(e => console.log("Unlock restriction triggered."));
         }
+        return true;
       }
+      return false;
     }
 
     function stopMusic() {
@@ -767,6 +853,7 @@
     clearBtn.addEventListener('click', () => {
       stopMusic();
       document.querySelectorAll('.movable-asset').forEach(asset => asset.remove());
+      racks.forEach(r => r.occupiedBy = null); 
       wall.classList.remove('lamp-on');
       statusMsg.textContent = "";
     });
