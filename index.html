@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vinyl Holder Racks Room Builder</title>
+  <title>Cozy 8-Bit Vinyl Room Builder v2</title>
   <style>
     :root {
       --bg-color: #1f1315;
@@ -163,7 +163,7 @@
       transition: background-color 0.4s;
     }
 
-    /* Cozy Light Glow Overlay */
+    /* Aesthetic Warm Golden Light Glow Radial Blend Overlay */
     .light-glow-overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -178,7 +178,7 @@
       opacity: 1;
     }
 
-    /* Hanging Plants */
+    /* Ambient Hanging Plants at Top */
     .wall-plants {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 35px;
@@ -200,19 +200,18 @@
     .shelf-2 { top: 56%; }
     .shelf-3 { top: 86%; }
 
-    /* RETRO VISIBLE HOLDER RACKS */
+    /* Retro Vinyl Holder Rack Slots */
     .rack-slot {
       position: absolute;
-      width: 135px;
-      height: 25px;
+      width: 135px; height: 25px;
       background: #211107;
       border: 4px solid #140904;
-      border-top: none; /* Open bracket style slot */
+      border-top: none;
       z-index: 1;
       box-shadow: inset 0 -4px 0 rgba(0,0,0,0.4);
     }
 
-    /* Large Vinyl Records */
+    /* Large Vinyl Records Design */
     .vinyl {
       width: 135px; height: 135px;
       border-radius: 50%;
@@ -223,6 +222,7 @@
       align-items: center;
       position: relative;
     }
+    
     .vinyl::before {
       content: '';
       width: 90px; height: 90px;
@@ -234,6 +234,7 @@
       z-index: 4;
       image-rendering: pixelated;
     }
+    
     .vinyl::after {
       content: '';
       width: 8px; height: 8px;
@@ -243,7 +244,7 @@
       z-index: 5;
     }
 
-    /* PIXEL POP VISUAL ANIMATION */
+    /* Pixel Pop Animation for Unlocking */
     @keyframes pixelPop {
       0% { transform: scale(1); filter: brightness(1); }
       50% { transform: scale(1.12); filter: brightness(1.4); }
@@ -253,53 +254,95 @@
       animation: pixelPop 0.2s ease-out;
     }
 
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    .spinning { animation: spin 2.5s linear infinite; }
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    .spinning {
+      animation: spin 2.5s linear infinite;
+    }
 
+    /* Movable Objects Wrapper */
     .movable-asset {
       position: absolute;
-      cursor: move;
+      cursor: grab;
       touch-action: none;
       user-select: none;
       z-index: 5;
     }
+    .movable-asset:active {
+      cursor: grabbing;
+    }
 
-    /* Speech Input Bubble */
-    .pet-container { display: flex; flex-direction: column; align-items: center; }
+    /* Interactive 8-Bit Speech Input Bubble */
+    .pet-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     .speech-bubble {
-      background: #fff; border: 3px solid #000; border-radius: 4px;
-      padding: 3px 6px; position: relative; margin-bottom: 8px;
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: 4px;
+      padding: 3px 6px;
+      position: relative;
+      margin-bottom: 8px;
       box-shadow: 3px 3px 0 rgba(0,0,0,0.2);
     }
     .speech-bubble::after {
-      content: ''; position: absolute; bottom: -9px; left: 50%;
-      transform: translateX(-50%); width: 6px; height: 6px;
-      background: #fff; border-right: 3px solid #000; border-bottom: 3px solid #000;
-    }
-    .speech-bubble input {
-      border: none; outline: none; font-family: 'Courier New', monospace;
-      font-size: 0.75rem; width: 65px; text-align: center; font-weight: bold; color: #000;
+      content: '';
+      position: absolute;
+      bottom: -9px; left: 50%;
+      transform: translateX(-50%);
+      width: 6px; height: 6px;
+      background: #fff;
+      border-right: 3px solid #000;
+      border-bottom: 3px solid #000;
     }
 
-    /* Turntable */
+    .speech-bubble input {
+      border: none; outline: none;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem; width: 65px;
+      text-align: center; font-weight: bold;
+      color: #000;
+    }
+
+    /* Functional Record Player Design */
     .turntable-frame {
       width: 190px; height: 145px;
-      background: #b5835a; border: 5px solid #26140a;
+      background: #b5835a;
+      border: 5px solid #26140a;
       box-shadow: 0 8px 0 #26140a, inset 0 5px 0 #dfb18b;
       border-radius: 8px; padding: 12px;
       display: flex; align-items: center; justify-content: flex-start;
     }
-    .turntable-platter { width: 115px; height: 115px; background: #333; border-radius: 50%; border: 4px solid #26140a; }
-    .needle-arm {
-      width: 10px; height: 65px; background: #ccd5ae; border: 3px solid #26140a;
-      position: absolute; right: 25px; top: 20px;
-      transform-origin: top center; transform: rotate(15deg);
-      transition: transform 0.3s; z-index: 6;
+    .turntable-platter {
+      width: 115px; height: 115px;
+      background: #333;
+      border-radius: 50%;
+      border: 4px solid #26140a;
     }
-    .playing .needle-arm { transform: rotate(33deg); }
+    .needle-arm {
+      width: 10px; height: 65px;
+      background: #ccd5ae;
+      border: 3px solid #26140a;
+      position: absolute; right: 25px; top: 20px;
+      transform-origin: top center;
+      transform: rotate(15deg);
+      transition: transform 0.3s;
+      z-index: 6;
+    }
+    .playing .needle-arm {
+      transform: rotate(33deg);
+    }
 
-    /* Arched Floor Lamp */
-    .lamp-wrapper { display: flex; flex-direction: column; align-items: center; cursor: pointer !important; }
+    /* Arched Floor Lamp Layout */
+    .lamp-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
     .lamp-beam {
       width: 120px; height: 180px;
       background: linear-gradient(rgba(255,200,80,0.45), transparent);
@@ -307,12 +350,19 @@
       position: absolute; left: -55px; top: 30px;
       display: none; pointer-events: none;
     }
-    .lamp-wrapper.on .lamp-beam { display: block; }
+    .lamp-wrapper.on .lamp-beam {
+      display: block;
+    }
 
-    .pixel-art-asset svg { shape-rendering: crispEdges; }
+    .pixel-art-asset svg {
+      shape-rendering: crispEdges; 
+    }
 
     #status-msg {
-      font-size: 0.75rem; color: #dfb18b; text-align: center; min-height: 14px;
+      font-size: 0.75rem;
+      color: #dfb18b;
+      text-align: center;
+      min-height: 14px;
     }
   </style>
 </head>
@@ -374,7 +424,7 @@
     const audioEngine = document.getElementById('audio-engine');
 
     let currentPlayingVinyl = null;
-    const racks = []; // Holds state coordinates for structural rack attachments
+    const racks = []; 
 
     const pixelArtLibrary = {
       cat_stand: `<svg width="115" height="85" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 5h8v6H1V5z" fill="#d4a373"/><path d="M9 3h6v6H9V3z" fill="#e7c19b"/><path d="M9 1h2v2H9V1zm4 0h2v2h-2V1z" fill="#d4a373"/><path d="M10 4h2v2h-2V4zm3 0h2v2h-2V4z" fill="#fff"/><path d="M10 5h1v1h-1V5zm3 0h1v1h-1V5z" fill="#26140a"/><path d="M12 6h1v1h-1V6z" fill="#ffb4a2"/><path d="M3 11h2v5H3v-5zm4 1h2v4H7v-4zm6-1h2v5h-2v-5z" fill="#26140a"/><path d="M0 3h2v5H0V3z" fill="#d4a373"/></svg>`,
@@ -388,10 +438,9 @@
 
     window.onload = () => { 
       buildVisibleRacks();
-      fetchTracks("Cozy Vinyl Lofi"); 
+      fetchTracks("8-Bit Lofi"); 
     };
 
-    // Construct the 9 Visual Holder Racks (3 per shelf)
     function buildVisibleRacks() {
       racks.length = 0;
       for (let i = 0; i < 9; i++) {
@@ -401,7 +450,7 @@
         
         const horizontalSpacing = wall.clientWidth / 3;
         const startX = (horizontalSpacing * slotIndex) + (horizontalSpacing / 2) - 67;
-        const startY = targetShelf.offsetTop - 18; // Sits nested cleanly right above shelf bounding edges
+        const startY = targetShelf.offsetTop - 18; 
 
         const rackEl = document.createElement('div');
         rackEl.classList.add('rack-slot');
@@ -413,7 +462,7 @@
           id: i,
           el: rackEl,
           left: startX,
-          top: targetShelf.offsetTop - 128, // Snap placement target position for vinyl elements
+          top: targetShelf.offsetTop - 128, 
           occupiedBy: null
         });
       }
@@ -458,39 +507,30 @@
       });
     }
 
-    // Attachment Systems: Locks Vinyl back into specific physical rack arrays
     function lockVinylToRack(vinylEl, rack) {
       vinylEl.style.left = `${rack.left}px`;
       vinylEl.style.top = `${rack.top}px`;
       vinylEl.dataset.locked = "true";
       vinylEl.dataset.rackId = rack.id;
       rack.occupiedBy = vinylEl;
-      vinylEl.style.cursor = "pointer";
     }
 
-    // Click-to-Remove Mechanic handling individual pop shifts
     function unlockVinylFromRack(vinylEl) {
       const rackId = vinylEl.dataset.rackId;
-      if (rackId !== undefined) {
+      if (rackId !== undefined && racks[rackId]) {
         racks[rackId].occupiedBy = null;
       }
       vinylEl.dataset.locked = "false";
       delete vinylEl.dataset.rackId;
-      vinylEl.style.cursor = "move";
 
-      // Trigger structural pixel pulse visual feedback shift
+      // Pop Visuals
       vinylEl.classList.add('pixel-popping');
       vinylEl.addEventListener('animationend', () => {
         vinylEl.classList.remove('pixel-popping');
       }, { once: true });
-
-      statusMsg.textContent = "🔓 VINYL UNLOCKED! FREELY DRAGGABLE.";
-      statusMsg.style.color = "#dfb18b";
-      setTimeout(() => { if(statusMsg.textContent.includes("UNLOCKED")) statusMsg.textContent = ""; }, 2000);
     }
 
     function spawnVinyl(coverUrl, previewUrl) {
-      // Core Attachment System Finder loops for open slots
       const freeRack = racks.find(r => r.occupiedBy === null);
       if (!freeRack) {
         statusMsg.textContent = "⚠️ ALL HOLDER RACKS FULL! MAX 9 VINYLS.";
@@ -503,23 +543,20 @@
       vinyl.style.setProperty('--cover-art', `url('${coverUrl}')`);
       vinyl.dataset.preview = previewUrl;
       
-      // Auto-fly attachment route instantiation
       lockVinylToRack(vinyl, freeRack);
 
       vinyl.addEventListener('dblclick', () => {
         if (currentPlayingVinyl === vinyl) stopMusic();
-        if (vinyl.dataset.rackId !== undefined) {
+        if (vinyl.dataset.rackId !== undefined && racks[vinyl.dataset.rackId]) {
           racks[vinyl.dataset.rackId].occupiedBy = null;
         }
         vinyl.remove();
         statusMsg.textContent = ""; 
       });
 
-      // Hook up single-click extraction filter loop trigger mechanics
+      // Quick single-click backup manual unlock
       vinyl.addEventListener('click', () => {
-        if (vinyl.dataset.locked === "true") {
-          unlockVinylFromRack(vinyl);
-        }
+        if (vinyl.dataset.locked === "true") unlockVinylFromRack(vinyl);
       });
 
       wall.appendChild(vinyl);
@@ -570,7 +607,7 @@
       const liquidFill = isFilled ? "#582f0e" : "transparent";
       return `<svg width="55" height="55" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2 4h9v9H2V4z" fill="${hexColor}"/>
-                <path d="M11 6h3v5h-3V6zm1 1h1v3h-1V7z" fill="${hexColor}"/>
+                <path d="M11 6h3v5h-3V6zm1 h1v3h-1V7z" fill="${hexColor}"/>
                 <path d="M3 5h7v3H3V5z" fill="${liquidFill}"/>
               </svg>`;
     }
@@ -685,7 +722,7 @@
       makeDraggable(player);
     }
 
-    // Drag Engine with Locked Attachment Logic Locks
+    // FIXED DRAG ENGINE: Bypasses locks seamlessly if user initiates drag behavior
     let activeElement = null;
     let startX, startY, initialLeft, initialTop;
     let dragMoveDetected = false;
@@ -693,9 +730,6 @@
     function makeDraggable(element) {
       element.addEventListener('pointerdown', (e) => {
         if (e.target.tagName === 'INPUT') return;
-        
-        // Lock Shield: If a vinyl is currently attached inside a slot, block normal click drags
-        if (element.classList.contains('placed-vinyl') && element.dataset.locked === "true") return;
 
         activeElement = element;
         activeElement.dataset.dragging = "false";
@@ -704,6 +738,7 @@
         document.querySelectorAll('.movable-asset').forEach(v => v.style.zIndex = 5);
         activeElement.style.zIndex = 10;
 
+        // If picking up a vinyl playing music on turntable, shut it off instantly
         if (activeElement.classList.contains('placed-vinyl') && currentPlayingVinyl === activeElement) {
           stopMusic();
         }
@@ -726,6 +761,11 @@
         if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
           dragMoveDetected = true;
           activeElement.dataset.dragging = "true";
+
+          // CRITICAL FIX: Dragging a locked vinyl now automatically forces an unlock action!
+          if (activeElement.classList.contains('placed-vinyl') && activeElement.dataset.locked === "true") {
+            unlockVinylFromRack(activeElement);
+          }
         }
 
         let newLeft = initialLeft + dx;
@@ -747,7 +787,6 @@
           
           setTimeout(() => { if(element) element.dataset.dragging = "false"; }, 50);
 
-          // Interaction collision checks logic
           if (activeElement.classList.contains('placed-vinyl')) {
             const snappedToPlayer = checkTurntableSnap(activeElement);
             if (!snappedToPlayer) {
@@ -763,7 +802,6 @@
       });
     }
 
-    // Attachment Systems Check: Scans for overlapping vacant slots on releases
     function checkRackSlotSnap(vinylEl) {
       const vRect = vinylEl.getBoundingClientRect();
       
@@ -789,7 +827,7 @@
       const mRect = mugEl.getBoundingClientRect();
       const cRect = machineEl.getBoundingClientRect();
 
-      const isOverlapping = !(mRect.right < cRect.left || mRect.left > cRect.right || mRect.bottom < cRect.top || mRect.top > cRect.bottom);
+      const isOverlapping = !(mRect.right < (cRect.left - 15) || mRect.left > (cRect.right + 15) || mRect.bottom < (cRect.top - 15) || mRect.top > (cRect.bottom + 15));
 
       if (isOverlapping) {
         const wallRect = wall.getBoundingClientRect();
@@ -815,7 +853,8 @@
       const vRect = vinylEl.getBoundingClientRect();
       const pRect = playerEl.getBoundingClientRect();
 
-      const isOverlapping = !(vRect.right < pRect.left || vRect.left > pRect.right || vRect.bottom < pRect.top || vRect.top > pRect.bottom);
+      // Expanded collision snapping area (+/- 15px extra forgiveness)
+      const isOverlapping = !(vRect.right < (pRect.left - 15) || vRect.left > (pRect.right + 15) || vRect.bottom < (pRect.top - 15) || vRect.top > (pRect.bottom + 15));
 
       if (isOverlapping) {
         const platterEl = playerEl.querySelector('.turntable-platter');
@@ -834,7 +873,11 @@
 
         if(vinylEl.dataset.preview) {
           audioEngine.src = vinylEl.dataset.preview;
-          audioEngine.play().catch(e => console.log("Unlock restriction triggered."));
+          audioEngine.play().catch(e => {
+            console.log("Autoplay unblock required.");
+            statusMsg.textContent = "🔊 Click inside the wall once to let browser play audio!";
+            statusMsg.style.color = "#dfb18b";
+          });
         }
         return true;
       }
@@ -860,3 +903,4 @@
   </script>
 </body>
 </html>
+
