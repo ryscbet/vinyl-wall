@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Vinyl Wall Builder</title>
+  <style>
+    :root {
+      --bg-color: #1e1e24;
+      --wall-color: #e5e0d8; /* Elegant gallery wall color */
+      --sidebar-color: #2a2a35;
+      --text-color: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      overflow: hidden;
+    }
+
+    /* Sidebar / Palette Styles */
+    .sidebar {
+      width: 320px;
+      background-color: var(--sidebar-color);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 5px 0 15px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    .sidebar h2 {
+      font-size: 1.5rem;
+      border-bottom: 2px solid #444;
+      padding-bottom: 10px;
+    }
+
+    .instructions {
+      font-size: 0.85rem;
+      color: #aaa;
+      line-height: 1.4;
+    }
+
+    .palette {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    /* Vinyl Thumbnails in Sidebar */
+    .palette-item {
+      background: #333;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .palette-item:hover {
+      transform: translateY(-3px);
+      background: #444;
+    }
+
+    .palette-item p {
+      font-size: 0.8rem;
+      margin-top: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* The Main Wall */
+    .wall-container {
+      flex: 1;
+      position: relative;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .wall {
+      width: 100%;
+      height: 100%;
+      background-color: var(--wall-color);
+      background-image: 
+        linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px),
+        linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
+      background-size: 20px 20px; /* Subtle grid pattern */
+      border-radius: 12px;
+      position: relative;
+      box-shadow: inset 0 0 40px rgba(0,0,0,0.2), 0 10px 30px rgba(0,0,0,0.5);
+      overflow: hidden;
+    }
+
+    /* CSS Vinyl Record Design */
+    .vinyl {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #0d0d0d 35%, #222 45%, #0d0d0d 50%, #1a1a1a 60%, #050505 70%);
+      box-shadow: 
+        inset 0 0 0 2px rgba(255,255,255,0.05),
+        inset 0 0 0 10px rgba(0,0,0,0.8),
+        inset 0 0 0 18px rgba(255,255,255,0.03),
+        inset 0 0 0 26px rgba(0,0,0,0.8),
+        0 8px 20px rgba(0,0,0,0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Vinyl Center Label */
+    .vinyl::before {
+      content: '';
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--label-color, #ff4757);
+      border: 2px solid #000;
+      z-index: 2;
+    }
+
+    /* Center Spindle Hole */
+    .vinyl::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--wall-color);
+      position: absolute;
+      z-index: 3;
+      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5);
+    }
+
+    /* Draggable Vinyls on the Wall */
+    .placed-vinyl {
+      position: absolute;
+      cursor: move;
+      touch-action: none; /* Prevents mobile scrolling while dragging */
+      user-select: none;
+      transition: transform 0.1s ease;
+    }
+
+    .placed-vinyl:active {
+      transform: scale(1.05);
+    }
+
+    /* Action Buttons */
+    .clear-btn {
+      background-color: #ff4757;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .clear-btn:hover {
+      background-color: #ff6b81;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>Vinyl Wall Builder</h2>
+    <p class="instructions">
+      <strong>Click</strong> a vinyl to add it to the wall.<br>
+      <strong>Drag</strong> them around to arrange.<br>
+      <strong>Double-click</strong> a vinyl on the wall to remove it.
+    </p>
+    
+    <div class="palette" id="palette">
+      </div>
+
+    <button class="clear-btn" id="clear-wall">Clear Wall</button>
+  </div>
+
+  <div class="wall-container">
+    <div class="wall" id="wall">
+      </div>
+  </div>
+
+  <script>
+    // Mock Vinyl Data (Feel free to change colors or titles!)
+    const vinylData = [
+      { id: 1, title: 'Rock Classics', color: '#ff4757' },
+      { id: 2, title: 'Jazz Grooves', color: '#ffa502' },
+      { id: 3, title: 'Synthwave Neon', color: '#2ed573' },
+      { id: 4, title: 'Deep Blues', color: '#1e90ff' },
+      { id: 5, title: 'Hip Hop Beats', color: '#9b59b6' },
+      { id: 6, title: 'Ambient Chill', color: '#1dd1a1' },
+      { id: 7, title: 'Reggae Sun', color: '#ffeb3b' },
+      { id: 8, title: 'Metal Core', color: '#57606f' }
+    ];
+
+    const palette = document.getElementById('palette');
+    const wall = document.getElementById('wall');
+    const clearBtn = document.getElementById('clear-wall');
+
+    // 1. Populate Sidebar Palette
+    vinylData.forEach(data => {
+      const item = document.createElement('div');
+      item.classList.add('palette-item');
+      
+      // Visual representation inside selector
+      const previewVinyl = document.createElement('div');
+      previewVinyl.classList.add('vinyl');
+      previewVinyl.style.setProperty('--label-color', data.color);
+      previewVinyl.style.transform = 'scale(0.6)'; // Scale down for sidebar
+      
+      const title = document.createElement('p');
+      title.textContent = data.title;
+
+      item.appendChild(previewVinyl);
+      item.appendChild(title);
+      
+      // Add to wall on click
+      item.addEventListener('click', () => spawnVinyl(data));
+      
+      palette.appendChild(item);
+    });
+
+    // 2. Spawn Vinyl onto the Wall
+    function spawnVinyl(data) {
+      const vinylWrapper = document.createElement('div');
+      vinylWrapper.classList.add('placed-vinyl', 'vinyl');
+      vinylWrapper.style.setProperty('--label-color', data.color);
+      
+      // Spawn slightly randomized near the center so they don't stack perfectly
+      const randomOffset = () => Math.floor(Math.random() * 60) - 30;
+      const startX = (wall.clientWidth / 2) - 60 + randomOffset();
+      const startY = (wall.clientHeight / 2) - 60 + randomOffset();
+      
+      vinylWrapper.style.left = `${startX}px`;
+      vinylWrapper.style.top = `${startY}px`;
+
+      // Double-click to remove
+      vinylWrapper.addEventListener('dblclick', () => {
+        vinylWrapper.remove();
+      });
+
+      wall.appendChild(vinylWrapper);
+      makeDraggable(vinylWrapper);
+    }
+
+    // 3. Modern Drag and Drop Logic (Pointer Events handles Mouse + Touch)
+    let activeElement = null;
+    let startX, startY, initialLeft, initialTop;
+
+    function makeDraggable(element) {
+      element.addEventListener('pointerdown', (e) => {
+        activeElement = element;
+        
+        // Bring clicked vinyl to the front
+        // Reset all others to z-index 1, make this one 10
+        document.querySelectorAll('.placed-vinyl').forEach(v => v.style.zIndex = 1);
+        activeElement.style.zIndex = 10;
+
+        startX = e.clientX;
+        startY = e.clientY;
+        initialLeft = parseInt(activeElement.style.left, 10);
+        initialTop = parseInt(activeElement.style.top, 10);
+
+        activeElement.setPointerCapture(e.pointerId);
+      });
+
+      element.addEventListener('pointermove', (e) => {
+        if (activeElement !== element) return;
+
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+
+        let newLeft = initialLeft + dx;
+        let newTop = initialTop + dy;
+
+        // Boundary restrictions (Keep vinyls inside the wall boundaries)
+        const maxLeft = wall.clientWidth - element.clientWidth;
+        const maxTop = wall.clientHeight - element.clientHeight;
+
+        newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+        newTop = Math.max(0, Math.min(newTop, maxTop));
+
+        activeElement.style.left = `${newLeft}px`;
+        activeElement.style.top = `${newTop}px`;
+      });
+
+      element.addEventListener('pointerup', (e) => {
+        if (activeElement === element) {
+          activeElement.releasePointerCapture(e.pointerId);
+          activeElement = null;
+        }
+      });
+    }
+
+    // 4. Clear Wall functionality
+    clearBtn.addEventListener('click', () => {
+      wall.innerHTML = '';
+    });
+  </script>
+</body>
+</html>
